@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50:  #ecfdf9;
+  --color-primary-100: #d0faf4;
+  --color-primary-200: #a5f3eb;
+  --color-primary-300: #6ae8dd;
+  --color-primary-400: #2dd4c8;
+  --color-primary-500: #00d5c4;
+  --color-primary-600: #00a896;
+  --color-primary-700: #007d71;
+  --color-primary-800: #065f56;
+  --color-primary-900: #054d46;
+  --color-primary-950: #022e2a;
+
+  --color-success-50:  #ecfdf5;
+  --color-success-100: #d1fae5;
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
+  --color-success-700: #047857;
+
+  --color-warning-50:  #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+
+  --color-danger-50:  #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+  --color-danger-700: #b91c1c;
+
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-body:    "Plus Jakarta Sans", sans-serif;
+}
+
+:root {
+  /* ── Backgrounds ─────────────────────── */
+  --bg-deep:      #080d14;
+  --bg-primary:   #0d1421;
+  --bg-secondary: #111827;
+  --bg-sidebar:   #080d14;
+
+  /* ── Glassmorphism ───────────────────── */
+  --glass-bg:      rgba(255, 255, 255, 0.04);
+  --glass-bg-md:   rgba(255, 255, 255, 0.025);
+  --glass-border:  rgba(255, 255, 255, 0.08);
+  --glass-blur:    blur(16px);
+  --glass-blur-sm: blur(8px);
+
+  /* ── Accent (Teal Neon) ──────────────── */
+  --accent:      #00d5c4;
+  --accent-dark: #00a896;
+
+  /* ── Semantic colors ─────────────────── */
+  --success: #10b981;
+  --danger:  #ef4444;
+  --warning: #f59e0b;
+  --purple:  #a78bfa;
+
+  /* ── Glow effects ────────────────────── */
+  --glow-accent:    0 0 20px rgba(0, 213, 196, 0.15);
+  --glow-accent-sm: 0 0 12px rgba(0, 213, 196, 0.10);
+  --glow-danger:    0 0 12px rgba(239, 68, 68, 0.20);
+  --glow-success:   0 0 12px rgba(16, 185, 129, 0.20);
+
+  /* ── Radius ──────────────────────────── */
+  --radius-card: 16px;
+  --radius-sm:   10px;
+
+  /* ── Sidebar ─────────────────────────── */
+  --sidebar-slim: 64px;
+  --sidebar-full: 220px;
+
+  /* ── Typography ──────────────────────── */
+  --text-primary:   #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-tertiary:  #475569;
+  --text-muted:     #334155;
+
+  /* ── Cards (used by existing pages) ─── */
+  --card-bg:      rgba(255, 255, 255, 0.04);
+  --card-shadow:  none;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --bg-tertiary:  rgba(0, 213, 196, 0.03);
+}
+
+/* ── Animations ──────────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+/* ── Base ────────────────────────────────────── */
+body {
+  margin: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* { box-sizing: border-box; }
+
+/* ── Sidebar hover-expand (desktop only) ─────── */
+@media (min-width: 1024px) {
+  .sidebar-collapse {
+    width: var(--sidebar-slim);
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+  .sidebar-collapse:hover {
+    width: var(--sidebar-full);
+  }
+  .sidebar-collapse .sidebar-label,
+  .sidebar-collapse .sidebar-logo-text {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    transition: opacity 0.15s ease 0.05s, max-width 0.2s ease;
+  }
+  .sidebar-collapse:hover .sidebar-label,
+  .sidebar-collapse:hover .sidebar-logo-text {
+    opacity: 1;
+    max-width: 160px;
+  }
+}
+
+/* ── Scrollbar ───────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 213, 196, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 213, 196, 0.5);
+}
+
+/* ── Print ───────────────────────────────────── */
+@media print {
+  body > * { display: none !important; }
+  #print-area { display: block !important; }
+  #print-area * { color: #000 !important; background: #fff !important; border-color: #ccc !important; }
+  #print-area table { border-collapse: collapse; width: 100%; }
+  #print-area th, #print-area td { border: 1px solid #ccc; padding: 6px 10px; font-size: 11px; }
+  #print-area th { background: #f3f4f6 !important; font-weight: 600; }
+  #print-area h1, #print-area h2, #print-area h3, #print-area h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+}
