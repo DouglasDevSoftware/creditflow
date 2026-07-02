@@ -13,6 +13,8 @@ import Operacoes from './pages/Operacoes';
 import Financeiro from './pages/Financeiro';
 import Relatorios from './pages/Relatorios';
 import Login from './pages/Login';
+import Admin from './pages/Admin';
+import AdminRoute from './components/AdminRoute';
 
 function DataErrorBanner() {
   const { error, refresh } = useData();
@@ -65,6 +67,11 @@ function AppLayout() {
               <Route path="/operacoes" element={<Operacoes />} />
               <Route path="/financeiro" element={<Financeiro />} />
               <Route path="/relatorios" element={<Relatorios />} />
+              <Route path="/admin" element={
+                <AdminRoute>
+                  <Admin />
+                </AdminRoute>
+              } />
             </Routes>
           </main>
         </div>
