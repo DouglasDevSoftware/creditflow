@@ -1,7 +1,8 @@
 import { NavLink, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, CreditCard, Banknote, Users,
-  HandCoins, Wallet, FileBarChart, X,
+  HandCoins, Wallet, FileBarChart, X, Shield,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -21,6 +22,8 @@ const menuItems = [
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const location = useLocation();
+  const { isAdmin } = useAuth();
+  const adminActive = location.pathname === '/admin';
 
   return (
     <>
@@ -106,6 +109,34 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             );
           })}
         </nav>
+
+        {isAdmin && (
+          <div style={{ borderTop: '1px solid var(--glass-border)', padding: '8px' }}>
+            <NavLink
+              to="/admin"
+              onClick={onClose}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] transition-all duration-200"
+              style={adminActive ? {
+                background: 'rgba(0,213,196,0.10)',
+                border: '1px solid rgba(0,213,196,0.25)',
+                color: 'var(--accent)',
+                boxShadow: 'var(--glow-accent-sm)',
+              } : {
+                color: 'rgba(255,255,255,0.38)',
+                border: '1px solid transparent',
+              }}
+              onMouseEnter={e => {
+                if (!adminActive) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.75)';
+              }}
+              onMouseLeave={e => {
+                if (!adminActive) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.38)';
+              }}
+            >
+              <Shield className="w-[18px] h-[18px] shrink-0" />
+              <span className="sidebar-label text-[13px] font-medium">Admin</span>
+            </NavLink>
+          </div>
+        )}
       </aside>
     </>
   );
