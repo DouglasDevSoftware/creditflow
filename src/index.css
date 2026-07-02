@@ -83,6 +83,9 @@
   --card-shadow:  none;
   --border-color: rgba(255, 255, 255, 0.08);
   --bg-tertiary:  rgba(0, 213, 196, 0.03);
+
+  /* ── Modals (solid, so page content behind doesn't bleed through) ─── */
+  --modal-bg: #141c2c;
 }
 
 /* ── Animations ──────────────────────────────── */

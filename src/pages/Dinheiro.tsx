@@ -188,9 +188,9 @@ export default function Dinheiro() {
 
       {/* Detail Modal */}
       {selectedFundo && !showEditForm && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => { setSelectedFundo(null); setShowAporte(false); }}>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => { setSelectedFundo(null); setShowAporte(false); }}>
           <div className="w-full max-w-2xl max-h-[85vh] rounded-xl overflow-hidden flex flex-col"
-            style={{ backgroundColor: 'var(--card-bg)' }} onClick={e => e.stopPropagation()}>
+            style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
               <div>
                 <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{selectedFundo.nome}</h2>
@@ -276,8 +276,8 @@ export default function Dinheiro() {
 
       {/* Edit Modal */}
       {showEditForm && selectedFundo && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowEditForm(false)}>
-          <div className="w-full max-w-lg rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--card-bg)' }} onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowEditForm(false)}>
+          <div className="w-full max-w-lg rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Editar Fundo</h2>
               <button onClick={() => setShowEditForm(false)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
@@ -322,8 +322,8 @@ export default function Dinheiro() {
 
       {/* New Fund Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowForm(false)}>
-          <div className="w-full max-w-lg rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--card-bg)' }} onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowForm(false)}>
+          <div className="w-full max-w-lg rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Novo Fundo de Dinheiro</h2>
               <button onClick={() => setShowForm(false)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
