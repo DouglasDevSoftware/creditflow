@@ -13,6 +13,7 @@ import Operacoes from './pages/Operacoes';
 import Financeiro from './pages/Financeiro';
 import Relatorios from './pages/Relatorios';
 import Login from './pages/Login';
+import ResetPassword from './pages/ResetPassword';
 import Admin from './pages/Admin';
 import AdminRoute from './components/AdminRoute';
 
@@ -84,6 +85,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/*" element={
         <ProtectedRoute>
           <AppLayout />

@@ -13,4 +13,24 @@ if (!isSupabaseConfigured) {
   );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const REMEMBER_ME_KEY = 'creditflow-remember-me';
+
+export function setRememberMe(remember: boolean) {
+  localStorage.setItem(REMEMBER_ME_KEY, remember ? 'true' : 'false');
+}
+
+// "Lembrar de mim" guarda a sessão no localStorage (sobrevive ao fechar o navegador);
+// caso contrário usa sessionStorage, que é limpo ao fechar a aba/janela.
+function activeStorage() {
+  return localStorage.getItem(REMEMBER_ME_KEY) === 'false' ? sessionStorage : localStorage;
+}
+
+const rememberAwareStorage = {
+  getItem: (key: string) => activeStorage().getItem(key),
+  setItem: (key: string, value: string) => activeStorage().setItem(key, value),
+  removeItem: (key: string) => activeStorage().removeItem(key),
+};
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: { storage: rememberAwareStorage },
+});
