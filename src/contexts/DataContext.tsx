@@ -34,6 +34,7 @@ interface DataContextValue {
     fundoDinheiroId?: string;
     valorEnviado: number;
     taxaAplicada: number;
+    tipoCobranca?: 'total' | 'somente_juros';
     formaPagamento: 'avista' | 'parcelado';
     quantidadeParcelas: number;
     observacoes?: string;
@@ -346,6 +347,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     fundoDinheiroId?: string;
     valorEnviado: number;
     taxaAplicada: number;
+    tipoCobranca?: 'total' | 'somente_juros';
     formaPagamento: 'avista' | 'parcelado';
     quantidadeParcelas: number;
     observacoes?: string;
@@ -366,11 +368,26 @@ export function DataProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    const valorTotalReceber = data.valorEnviado * (1 + data.taxaAplicada / 100);
-    const parcelas = data.formaPagamento === 'avista' ? 1 : data.quantidadeParcelas;
+    // "Somente Juros" só é válido para fonte = 'dinheiro' — força 'total' para cartão
+    const tipoCobranca: 'total' | 'somente_juros' =
+      data.fonte === 'dinheiro' ? (data.tipoCobranca ?? 'total') : 'total';
+    const somenteJuros = tipoCobranca === 'somente_juros';
+
+    // No modo somente_juros, cada parcela é só o juro do período (sem principal);
+    // valorTotalReceber continua incluindo o principal para que "Lucro" (valorTotalReceber
+    // - valorEnviado) permaneça correto em todo o app, igual ao modo 'total'.
+    const jurosPeriodo = data.valorEnviado * (data.taxaAplicada / 100);
+    const valorTotalReceber = somenteJuros
+      ? data.valorEnviado + jurosPeriodo
+      : data.valorEnviado * (1 + data.taxaAplicada / 100);
+    const parcelas = somenteJuros ? 1 : (data.formaPagamento === 'avista' ? 1 : data.quantidadeParcelas);
     // Bug 4: Fix rounding — last parcela absorbs the cent difference
-    const valorParcela = Math.round((valorTotalReceber / parcelas) * 100) / 100;
-    const valorUltimaParcela = Math.round((valorTotalReceber - valorParcela * (parcelas - 1)) * 100) / 100;
+    const valorParcela = somenteJuros
+      ? Math.round(jurosPeriodo * 100) / 100
+      : Math.round((valorTotalReceber / parcelas) * 100) / 100;
+    const valorUltimaParcela = somenteJuros
+      ? valorParcela
+      : Math.round((valorTotalReceber - valorParcela * (parcelas - 1)) * 100) / 100;
     const hoje = new Date().toISOString().slice(0, 10);
 
     const { data: opRow, error: opError } = await supabase.from('operacoes').insert({
@@ -382,7 +399,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
       valor_enviado: data.valorEnviado,
       taxa_aplicada: data.taxaAplicada,
       valor_total_receber: valorTotalReceber,
-      forma_pagamento: data.formaPagamento,
+      tipo_cobranca: tipoCobranca,
+      forma_pagamento: somenteJuros ? 'avista' : data.formaPagamento,
       quantidade_parcelas: parcelas,
       status: 'em_aberto',
       observacoes: data.observacoes ?? '',
