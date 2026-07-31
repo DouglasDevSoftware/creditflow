@@ -7,6 +7,7 @@ export function getMovimentacoesMensais(movimentacoes: MovimentacaoFinanceira[],
 
   for (let i = months - 1; i >= 0; i--) {
     const d = new Date();
+    d.setDate(1); // evita overflow de mês (ex: 31/mai -> setMonth(3) viraria 1/jul em vez de 30/abr)
     d.setMonth(d.getMonth() - i);
     const key = d.toISOString().slice(0, 7);
     const mesLabel = MESES[d.getMonth()];
@@ -30,6 +31,7 @@ export function getInadimplenciaMensal(
 
   for (let i = months - 1; i >= 0; i--) {
     const d = new Date();
+    d.setDate(1); // evita overflow de mês (ex: 31/mai -> setMonth(3) viraria 1/jul em vez de 30/abr)
     d.setMonth(d.getMonth() - i);
     const key = d.toISOString().slice(0, 7);
     const mesLabel = MESES[d.getMonth()];
