@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { HandCoins, Plus, Search, Eye, X, Calendar, Loader2, Pencil, Trash2, CheckCircle2 } from 'lucide-react';
+import { HandCoins, Plus, Search, Eye, X, Calendar, Loader2, Pencil, Trash2, CheckCircle2, Wallet } from 'lucide-react';
 import KPICard from '../components/KPICard';
 import StatusBadge from '../components/StatusBadge';
 import ConfirmModal from '../components/ConfirmModal';
@@ -12,7 +12,7 @@ export default function Operacoes() {
   const {
     operacoes, cartoes, fundosDinheiro, clientes, loading,
     getClienteNome, getFonteNome,
-    createOperacao, updateOperacao, deleteOperacao, pagarParcela,
+    createOperacao, updateOperacao, deleteOperacao, pagarParcela, quitarPrincipal,
   } = useData();
   const { showToast } = useToast();
 
@@ -25,6 +25,7 @@ export default function Operacoes() {
   const [saving, setSaving] = useState(false);
   const [payingParcelaId, setPayingParcelaId] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{ id: string; label: string } | null>(null);
+  const [confirmQuitarPrincipal, setConfirmQuitarPrincipal] = useState<{ id: string; label: string } | null>(null);
 
   const [form, setForm] = useState({
     clienteId: '', fonte: 'cartao' as 'cartao' | 'dinheiro', cartaoId: '', fundoDinheiroId: '',
@@ -111,6 +112,15 @@ export default function Operacoes() {
     if (err) { showToast(err, 'error'); return; }
     setSelectedOp(null);
     showToast('Operação excluída.');
+  };
+
+  const handleQuitarPrincipal = async () => {
+    if (!confirmQuitarPrincipal) return;
+    const err = await quitarPrincipal(confirmQuitarPrincipal.id);
+    setConfirmQuitarPrincipal(null);
+    if (err) { showToast(err, 'error'); return; }
+    setSelectedOp(null);
+    showToast('Principal quitado com sucesso!');
   };
 
   const handlePagarParcela = async (parcelaId: string, operacaoId: string) => {
@@ -210,9 +220,18 @@ export default function Operacoes() {
                     </td>
                     <td className="px-4 py-3 text-sm hidden md:table-cell" style={{ color: 'var(--text-secondary)' }}>{getFonteNome(op)}</td>
                     <td className="px-4 py-3 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{formatCurrency(op.valorEnviado)}</td>
-                    <td className="px-4 py-3 text-sm hidden lg:table-cell" style={{ color: 'var(--text-secondary)' }}>{op.taxaAplicada}%</td>
+                    <td className="px-4 py-3 text-sm hidden lg:table-cell" style={{ color: 'var(--text-secondary)' }}>
+                      {op.taxaAplicada}%
+                      {op.tipoCobranca === 'somente_juros' && (
+                        <span className="ml-1.5 px-1.5 py-0.5 rounded text-[10px] font-semibold" style={{ background: 'rgba(59,130,246,0.12)', color: '#60a5fa' }}>Juros</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-sm font-medium hidden sm:table-cell" style={{ color: 'var(--text-primary)' }}>{formatCurrency(op.valorTotalReceber)}</td>
-                    <td className="px-4 py-3 text-sm hidden lg:table-cell" style={{ color: 'var(--text-secondary)' }}>{op.quantidadeParcelas}x {formatCurrency(op.parcelas[0]?.valor || 0)}</td>
+                    <td className="px-4 py-3 text-sm hidden lg:table-cell" style={{ color: 'var(--text-secondary)' }}>
+                      {op.tipoCobranca === 'somente_juros'
+                        ? `Recorrente (${formatCurrency(op.parcelas[op.parcelas.length - 1]?.valor ?? 0)})`
+                        : `${op.quantidadeParcelas}x ${formatCurrency(op.parcelas[0]?.valor || 0)}`}
+                    </td>
                     <td className="px-4 py-3"><StatusBadge status={op.status} /></td>
                     <td className="px-4 py-3">
                       <button onClick={() => setSelectedOp(op)} className="p-1.5 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors">
@@ -245,7 +264,14 @@ export default function Operacoes() {
                 <button onClick={() => handleOpenEdit(selectedOp)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors" title="Editar">
                   <Pencil className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
                 </button>
-                {!selectedOp.parcelas.some(p => p.status === 'paga') && (
+                {selectedOp.tipoCobranca === 'somente_juros' && !selectedOp.principalQuitado && (
+                  <button
+                    onClick={() => setConfirmQuitarPrincipal({ id: selectedOp.id, label: `Op. #${selectedOp.id.slice(0, 8).toUpperCase()}` })}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors" title="Quitar Principal">
+                    <Wallet className="w-3.5 h-3.5" /> Quitar Principal
+                  </button>
+                )}
+                {!selectedOp.parcelas.some(p => p.status === 'paga') && !selectedOp.principalQuitado && (
                   <button
                     onClick={() => setConfirmDelete({ id: selectedOp.id, label: `Op. #${selectedOp.id.slice(0, 8).toUpperCase()}` })}
                     className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors" title="Excluir">
@@ -283,12 +309,26 @@ export default function Operacoes() {
                 </div>
                 <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Forma Pgto</p>
-                  <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{selectedOp.formaPagamento === 'avista' ? 'À vista' : `${selectedOp.quantidadeParcelas}x`}</p>
+                  <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                    {selectedOp.tipoCobranca === 'somente_juros'
+                      ? 'Somente Juros (recorrente)'
+                      : (selectedOp.formaPagamento === 'avista' ? 'À vista' : `${selectedOp.quantidadeParcelas}x`)}
+                  </p>
                 </div>
                 <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Status</p>
                   <div className="mt-0.5"><StatusBadge status={selectedOp.status} /></div>
                 </div>
+                {selectedOp.tipoCobranca === 'somente_juros' && (
+                  <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                    <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Principal</p>
+                    <p className="text-sm font-medium" style={{ color: selectedOp.principalQuitado ? '#34d399' : 'var(--text-primary)' }}>
+                      {selectedOp.principalQuitado
+                        ? `Quitado em ${formatDate(selectedOp.dataQuitacaoPrincipal!)}`
+                        : `${formatCurrency(selectedOp.valorEnviado)} em aberto`}
+                    </p>
+                  </div>
+                )}
               </div>
               {selectedOp.observacoes && (
                 <div className="p-3 rounded-lg border" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-tertiary)' }}>
@@ -314,7 +354,9 @@ export default function Operacoes() {
                     <tbody>
                       {selectedOp.parcelas.map(p => (
                         <tr key={p.id} className="border-t" style={{ borderColor: 'var(--border-color)' }}>
-                          <td className="px-3 py-2 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{p.numero}/{selectedOp.quantidadeParcelas}</td>
+                          <td className="px-3 py-2 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                            {selectedOp.tipoCobranca === 'somente_juros' ? `Juros #${p.numero}` : `${p.numero}/${selectedOp.quantidadeParcelas}`}
+                          </td>
                           <td className="px-3 py-2 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{formatCurrency(p.valor)}</td>
                           <td className="px-3 py-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
                             <div className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {formatDate(p.vencimento)}</div>
@@ -566,6 +608,17 @@ export default function Operacoes() {
           danger
           onConfirm={handleDelete}
           onCancel={() => setConfirmDelete(null)}
+        />
+      )}
+
+      {/* Confirm Quitar Principal */}
+      {confirmQuitarPrincipal && (
+        <ConfirmModal
+          title="Quitar principal?"
+          message={`Confirma a devolução do principal da ${confirmQuitarPrincipal.label}? O valor voltará para o fundo de dinheiro e nenhuma nova parcela de juros será gerada.`}
+          confirmLabel="Quitar Principal"
+          onConfirm={handleQuitarPrincipal}
+          onCancel={() => setConfirmQuitarPrincipal(null)}
         />
       )}
     </div>
