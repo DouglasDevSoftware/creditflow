@@ -353,6 +353,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     quantidadeParcelas: number;
     observacoes?: string;
   }) => {
+    if (data.valorEnviado <= 0) return 'O valor enviado deve ser maior que zero.';
+
     // Bug 6: Validate available limit before creating
     if (data.fonte === 'cartao' && data.cartaoId) {
       const cartao = cartoes.find(c => c.id === data.cartaoId);

@@ -590,7 +590,7 @@ export default function Operacoes() {
               <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
                 <button onClick={() => setShowForm(false)} className="px-4 py-2 text-sm font-medium rounded-lg border hover:bg-[var(--bg-tertiary)] transition-colors" style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>Cancelar</button>
                 <button onClick={handleSaveOperacao}
-                  disabled={saving || !form.clienteId || (form.fonte === 'cartao' ? !form.cartaoId : !form.fundoDinheiroId) || !valorEnviadoNum}
+                  disabled={saving || !form.clienteId || (form.fonte === 'cartao' ? !form.cartaoId : !form.fundoDinheiroId) || valorEnviadoNum <= 0}
                   className="px-4 py-2 text-sm font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-60">
                   {saving ? 'Salvando...' : 'Registrar Operação'}
                 </button>
