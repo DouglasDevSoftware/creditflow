@@ -32,7 +32,8 @@ export default function Dinheiro() {
     .filter(o => o.status !== 'pago')
     .reduce((s, o) => {
       const pago = o.parcelas.filter(p => p.status === 'paga').reduce((sum, p) => sum + p.valor, 0);
-      return s + (o.valorTotalReceber - pago);
+      const principalJaDevolvido = o.principalQuitado ? o.valorEnviado : 0;
+      return s + (o.valorTotalReceber - pago - principalJaDevolvido);
     }, 0);
 
   const handleSave = async () => {

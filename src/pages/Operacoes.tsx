@@ -43,7 +43,8 @@ export default function Operacoes() {
   const totalEmprestado = operacoes.reduce((s, o) => s + o.valorEnviado, 0);
   const totalReceber = operacoes.filter(o => o.status !== 'pago').reduce((s, o) => {
     const pago = o.parcelas.filter(p => p.status === 'paga').reduce((sum, p) => sum + p.valor, 0);
-    return s + (o.valorTotalReceber - pago);
+    const principalJaDevolvido = o.principalQuitado ? o.valorEnviado : 0;
+    return s + (o.valorTotalReceber - pago - principalJaDevolvido);
   }, 0);
   const lucroTotal = operacoes.reduce((s, o) => s + (o.valorTotalReceber - o.valorEnviado), 0);
   const opsAtivas = operacoes.filter(o => o.status !== 'pago').length;

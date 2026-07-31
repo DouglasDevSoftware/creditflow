@@ -592,8 +592,18 @@ export function DataProvider({ children }: { children: ReactNode }) {
     if (op.principalQuitado) return 'O principal já foi quitado.';
 
     const hoje = new Date().toISOString().slice(0, 10);
+    const temParcelaVencida = op.parcelas.some(p => p.status === 'vencida');
     const temParcelaPendente = op.parcelas.some(p => p.status === 'pendente' || p.status === 'vencida');
-    const novoStatusOp: Operacao['status'] = temParcelaPendente ? 'em_aberto' : 'pago';
+    const novoStatusOp: Operacao['status'] = temParcelaVencida ? 'atrasado' : (temParcelaPendente ? 'em_aberto' : 'pago');
+
+    if (op.fundoDinheiroId) {
+      const { data: cur } = await supabase.from('fundos_dinheiro').select('valor_disponivel').eq('id', op.fundoDinheiroId).single();
+      if (cur) {
+        await supabase.from('fundos_dinheiro').update({
+          valor_disponivel: Number(cur.valor_disponivel) + op.valorEnviado,
+        }).eq('id', op.fundoDinheiroId);
+      }
+    }
 
     const { error: opError } = await supabase
       .from('operacoes')
@@ -604,15 +614,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
       })
       .eq('id', operacaoId);
     if (opError) return opError.message;
-
-    if (op.fundoDinheiroId) {
-      const { data: cur } = await supabase.from('fundos_dinheiro').select('valor_disponivel').eq('id', op.fundoDinheiroId).single();
-      if (cur) {
-        await supabase.from('fundos_dinheiro').update({
-          valor_disponivel: Number(cur.valor_disponivel) + op.valorEnviado,
-        }).eq('id', op.fundoDinheiroId);
-      }
-    }
 
     const cliente = clientes.find(c => c.id === op.clienteId);
     await supabase.from('movimentacoes').insert({

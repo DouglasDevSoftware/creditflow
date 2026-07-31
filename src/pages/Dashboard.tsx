@@ -98,7 +98,8 @@ export default function Dashboard() {
     .filter(o => o.status !== 'pago')
     .reduce((sum, o) => {
       const pago = o.parcelas.filter(p => p.status === 'paga').reduce((s, p) => s + p.valor, 0);
-      return sum + (o.valorTotalReceber - pago);
+      const principalJaDevolvido = o.principalQuitado ? o.valorEnviado : 0;
+      return sum + (o.valorTotalReceber - pago - principalJaDevolvido);
     }, 0);
   const totalVencido = operacoes.reduce((sum, o) => {
     return sum + o.parcelas.filter(p => p.status === 'vencida').reduce((s, p) => s + p.valor, 0);
