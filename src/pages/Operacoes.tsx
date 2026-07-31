@@ -28,7 +28,7 @@ export default function Operacoes() {
 
   const [form, setForm] = useState({
     clienteId: '', fonte: 'cartao' as 'cartao' | 'dinheiro', cartaoId: '', fundoDinheiroId: '',
-    valorEnviado: '', taxaAplicada: '10',
+    valorEnviado: '', taxaAplicada: '10', tipoCobranca: 'total' as 'total' | 'somente_juros',
     formaPagamento: 'parcelado' as 'avista' | 'parcelado', quantidadeParcelas: '3', observacoes: '',
   });
   const [editForm, setEditForm] = useState({ observacoes: '', status: '' as Operacao['status'] });
@@ -50,13 +50,16 @@ export default function Operacoes() {
   const valorEnviadoNum = Number(form.valorEnviado) || 0;
   const taxaNum = Number(form.taxaAplicada) || 0;
   const parcelasNum = form.formaPagamento === 'avista' ? 1 : Number(form.quantidadeParcelas) || 1;
+  const somenteJurosSelecionado = form.fonte === 'dinheiro' && form.tipoCobranca === 'somente_juros';
+  const jurosPorPeriodo = valorEnviadoNum * (taxaNum / 100);
   const previewTotalReceber = valorEnviadoNum * (1 + taxaNum / 100);
   const lucro = previewTotalReceber - valorEnviadoNum;
   const valorParcela = parcelasNum > 0 ? previewTotalReceber / parcelasNum : 0;
 
   const resetForm = () => setForm({
     clienteId: '', fonte: 'cartao', cartaoId: '', fundoDinheiroId: '',
-    valorEnviado: '', taxaAplicada: '10', formaPagamento: 'parcelado', quantidadeParcelas: '3', observacoes: '',
+    valorEnviado: '', taxaAplicada: '10', tipoCobranca: 'total',
+    formaPagamento: 'parcelado', quantidadeParcelas: '3', observacoes: '',
   });
 
   const handleSaveOperacao = async () => {
@@ -69,6 +72,7 @@ export default function Operacoes() {
       fundoDinheiroId: form.fonte === 'dinheiro' ? form.fundoDinheiroId : undefined,
       valorEnviado: valorEnviadoNum,
       taxaAplicada: taxaNum,
+      tipoCobranca: form.fonte === 'dinheiro' ? form.tipoCobranca : 'total',
       formaPagamento: form.formaPagamento,
       quantidadeParcelas: parcelasNum,
       observacoes: form.observacoes,
@@ -415,7 +419,7 @@ export default function Operacoes() {
                   <select value={form.fonte}
                     onChange={e => {
                       const fonte = e.target.value as 'cartao' | 'dinheiro';
-                      setForm(f => ({ ...f, fonte, cartaoId: '', fundoDinheiroId: '', taxaAplicada: '10' }));
+                      setForm(f => ({ ...f, fonte, cartaoId: '', fundoDinheiroId: '', taxaAplicada: '10', tipoCobranca: 'total' }));
                     }}
                     className="w-full px-3 py-2 rounded-lg border text-sm"
                     style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
@@ -423,6 +427,18 @@ export default function Operacoes() {
                     <option value="dinheiro">Dinheiro (capital próprio)</option>
                   </select>
                 </div>
+                {form.fonte === 'dinheiro' && (
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Tipo de Cobrança</label>
+                    <select value={form.tipoCobranca}
+                      onChange={e => setForm(f => ({ ...f, tipoCobranca: e.target.value as 'total' | 'somente_juros' }))}
+                      className="w-full px-3 py-2 rounded-lg border text-sm"
+                      style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+                      <option value="total">Valor Total (principal + juros)</option>
+                      <option value="somente_juros">Somente Juros (principal fica em aberto)</option>
+                    </select>
+                  </div>
+                )}
                 {form.fonte === 'cartao' ? (
                   <div className="sm:col-span-2">
                     <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Cartão</label>
@@ -464,23 +480,27 @@ export default function Operacoes() {
                     className="w-full px-3 py-2 rounded-lg border text-sm"
                     style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} placeholder="10" />
                 </div>
-                <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Forma de Pagamento</label>
-                  <select value={form.formaPagamento} onChange={e => setForm(f => ({ ...f, formaPagamento: e.target.value as 'avista' | 'parcelado' }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
-                    <option value="avista">À Vista</option>
-                    <option value="parcelado">Parcelado</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Parcelas</label>
-                  <input type="number" value={form.quantidadeParcelas} onChange={e => setForm(f => ({ ...f, quantidadeParcelas: e.target.value }))}
-                    disabled={form.formaPagamento === 'avista'}
-                    className="w-full px-3 py-2 rounded-lg border text-sm disabled:opacity-50"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
-                    placeholder="1" min={1} max={24} />
-                </div>
+                {!somenteJurosSelecionado && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Forma de Pagamento</label>
+                      <select value={form.formaPagamento} onChange={e => setForm(f => ({ ...f, formaPagamento: e.target.value as 'avista' | 'parcelado' }))}
+                        className="w-full px-3 py-2 rounded-lg border text-sm"
+                        style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+                        <option value="avista">À Vista</option>
+                        <option value="parcelado">Parcelado</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Parcelas</label>
+                      <input type="number" value={form.quantidadeParcelas} onChange={e => setForm(f => ({ ...f, quantidadeParcelas: e.target.value }))}
+                        disabled={form.formaPagamento === 'avista'}
+                        className="w-full px-3 py-2 rounded-lg border text-sm disabled:opacity-50"
+                        style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+                        placeholder="1" min={1} max={24} />
+                    </div>
+                  </>
+                )}
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Observações</label>
                   <textarea value={form.observacoes} onChange={e => setForm(f => ({ ...f, observacoes: e.target.value }))}
@@ -490,20 +510,38 @@ export default function Operacoes() {
               </div>
               <div className="p-3 rounded-lg border" style={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-color)' }}>
                 <p className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Resumo da Operação (prévia)</p>
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Total a Receber</p>
-                    <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{valorEnviadoNum ? formatCurrency(previewTotalReceber) : '—'}</p>
+                {somenteJurosSelecionado ? (
+                  <>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Juros por Período</p>
+                        <p className="text-sm font-bold text-success-600">{valorEnviadoNum ? formatCurrency(jurosPorPeriodo) : '—'}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Principal (fica em aberto)</p>
+                        <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{valorEnviadoNum ? formatCurrency(valorEnviadoNum) : '—'}</p>
+                      </div>
+                    </div>
+                    <p className="text-xs mt-2" style={{ color: 'var(--text-tertiary)' }}>
+                      O cliente paga só os juros a cada período. O principal fica em aberto até você quitar manualmente.
+                    </p>
+                  </>
+                ) : (
+                  <div className="grid grid-cols-3 gap-2">
+                    <div>
+                      <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Total a Receber</p>
+                      <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{valorEnviadoNum ? formatCurrency(previewTotalReceber) : '—'}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Lucro</p>
+                      <p className="text-sm font-bold text-success-600">{valorEnviadoNum ? formatCurrency(lucro) : '—'}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Valor Parcela</p>
+                      <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{valorEnviadoNum ? formatCurrency(valorParcela) : '—'}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Lucro</p>
-                    <p className="text-sm font-bold text-success-600">{valorEnviadoNum ? formatCurrency(lucro) : '—'}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Valor Parcela</p>
-                    <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{valorEnviadoNum ? formatCurrency(valorParcela) : '—'}</p>
-                  </div>
-                </div>
+                )}
               </div>
               {formError && <p className="text-sm text-danger-600">{formError}</p>}
               <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
