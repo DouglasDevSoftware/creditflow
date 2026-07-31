@@ -42,6 +42,7 @@ interface DataContextValue {
   updateOperacao: (id: string, data: { observacoes?: string; status?: Operacao['status'] }) => Promise<string | null>;
   deleteOperacao: (id: string) => Promise<string | null>;
   pagarParcela: (parcelaId: string, operacaoId: string) => Promise<string | null>;
+  quitarPrincipal: (operacaoId: string) => Promise<string | null>;
   createMovimentacao: (data: Omit<MovimentacaoFinanceira, 'id'>) => Promise<string | null>;
 }
 
@@ -472,6 +473,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const op = operacoes.find(o => o.id === id);
     if (!op) return 'Operação não encontrada';
     if (op.parcelas.some(p => p.status === 'paga')) return 'Operação possui parcelas pagas e não pode ser excluída.';
+    if (op.principalQuitado) return 'Operação com principal quitado não pode ser excluída.';
 
     // Bug 5: Read current values from DB to avoid stale local state
     if (op.fonte === 'cartao' && op.cartaoId) {
@@ -583,6 +585,54 @@ export function DataProvider({ children }: { children: ReactNode }) {
     return null;
   };
 
+  const quitarPrincipal = async (operacaoId: string) => {
+    const op = operacoes.find(o => o.id === operacaoId);
+    if (!op) return 'Operação não encontrada';
+    if (op.tipoCobranca !== 'somente_juros') return 'Esta operação não está no modo Somente Juros.';
+    if (op.principalQuitado) return 'O principal já foi quitado.';
+
+    const hoje = new Date().toISOString().slice(0, 10);
+    const temParcelaPendente = op.parcelas.some(p => p.status === 'pendente' || p.status === 'vencida');
+    const novoStatusOp: Operacao['status'] = temParcelaPendente ? 'em_aberto' : 'pago';
+
+    const { error: opError } = await supabase
+      .from('operacoes')
+      .update({
+        principal_quitado: true,
+        data_quitacao_principal: hoje,
+        status: novoStatusOp,
+      })
+      .eq('id', operacaoId);
+    if (opError) return opError.message;
+
+    if (op.fundoDinheiroId) {
+      const { data: cur } = await supabase.from('fundos_dinheiro').select('valor_disponivel').eq('id', op.fundoDinheiroId).single();
+      if (cur) {
+        await supabase.from('fundos_dinheiro').update({
+          valor_disponivel: Number(cur.valor_disponivel) + op.valorEnviado,
+        }).eq('id', op.fundoDinheiroId);
+      }
+    }
+
+    const cliente = clientes.find(c => c.id === op.clienteId);
+    await supabase.from('movimentacoes').insert({
+      data: hoje,
+      tipo: 'entrada',
+      categoria: 'Devolução de Principal',
+      descricao: `Devolução do principal - ${cliente?.nome ?? 'cliente'} - Op. #${operacaoId.slice(0, 8).toUpperCase()}`,
+      valor: op.valorEnviado,
+      origem: 'operacao',
+      forma_pagamento: 'Pix',
+      cliente_id: op.clienteId,
+      fundo_dinheiro_id: op.fundoDinheiroId,
+      operacao_id: operacaoId,
+    });
+
+    await recalcularStatusCliente(op.clienteId);
+    await refresh();
+    return null;
+  };
+
   // ── Movimentações ─────────────────────────────────────────────────────────
 
   const createMovimentacao = async (data: Omit<MovimentacaoFinanceira, 'id'>) => {
@@ -631,6 +681,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       updateOperacao,
       deleteOperacao,
       pagarParcela,
+      quitarPrincipal,
       createMovimentacao,
     }}>
       {children}
