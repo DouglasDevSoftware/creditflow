@@ -41,12 +41,19 @@ Novas colunas em `operacoes` (migration `006_operacao_somente_juros.sql`):
 | `principal_quitado` | BOOLEAN | `false` | Só é relevante para `tipo_cobranca = 'somente_juros'`: vira `true` quando o usuário aciona "Quitar Principal". Para operações `'total'`, permanece sempre `false` e não é usado em nenhuma lógica. |
 | `data_quitacao_principal` | DATE | `NULL` | Data em que o principal foi quitado. |
 
-`valor_total_receber` passa a ter semânticas diferentes por modo:
+`valor_total_receber` passa a ter semânticas diferentes por modo, mas em ambos continua representando
+"principal + juros acumulados até agora" — isso é importante porque o "Lucro" é calculado em vários
+lugares do app (KPIs, detalhe da operação) como `valorTotalReceber - valorEnviado`, e essa conta só
+fica correta se `valorTotalReceber` sempre incluir o principal:
 - `'total'` (comportamento atual, inalterado): valor fixo calculado na criação
   (`valorEnviado * (1 + taxa/100)`), dividido nas parcelas.
-- `'somente_juros'`: **total acumulado**, começando em `0` e incrementado a cada nova parcela de
-  juros gerada (inclusive a primeira, gerada já na criação). Reflete os juros já cobrados/a cobrar
-  na parcela corrente — nunca projeta juros futuros indefinidos, pois não há prazo final conhecido.
+- `'somente_juros'`: **total acumulado**, começando em `valorEnviado + juros do 1º período`
+  (`valorEnviado * (1 + taxa/100)` — mesma fórmula do modo `'total'`, mas só para o primeiro ciclo) e
+  incrementado pelo valor de cada nova parcela de juros gerada depois. Assim `valorTotalReceber -
+  valorEnviado` sempre resulta nos juros acumulados até agora, igual ao modo `'total'`. **Importante:**
+  isso é diferente do valor de cada parcela individual (`parcelas.valor`), que representa só o juro
+  puro do período (`valorEnviado * taxa / 100`) — é o que o cliente efetivamente paga a cada ciclo, e
+  nunca inclui o principal.
 
 `parcelas` não muda de schema. No modo `somente_juros`, cada linha representa um período de juros:
 `valor = valorEnviado * taxaAplicada / 100`, `numero` incrementando a cada ciclo, `vencimento` =
@@ -66,9 +73,10 @@ Quando `fonte = 'dinheiro'`, novo campo **"Tipo de Cobrança"**:
     fica em aberto até você quitar."
 
 Em `createOperacao`, quando `tipoCobranca === 'somente_juros'`:
-1. Gera **uma única parcela** inicial: `numero = 1`, `valor = valorEnviado * taxa / 100`,
-   `vencimento = hoje + 30 dias`, `status = 'pendente'`.
-2. `valor_total_receber` inicial = valor dessa parcela.
+1. Gera **uma única parcela** inicial: `numero = 1`, `valor = valorEnviado * taxa / 100` (só o juro,
+   sem o principal), `vencimento = hoje + 30 dias`, `status = 'pendente'`.
+2. `valor_total_receber` inicial = `valorEnviado + valor` dessa parcela (principal + juro do 1º
+   período — ver nota na seção "Modelo de dados" sobre por que o principal entra nessa conta).
 3. `forma_pagamento = 'avista'`, `quantidade_parcelas = 1`.
 4. Débito em `valorDisponivel` do fundo e movimentação de saída (Pix): idêntico ao fluxo atual.
 5. Validação de saldo do fundo (`valorEnviado > valorDisponivel`) continua igual.
