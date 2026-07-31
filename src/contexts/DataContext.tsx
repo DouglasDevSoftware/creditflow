@@ -511,15 +511,41 @@ export function DataProvider({ children }: { children: ReactNode }) {
       .eq('id', parcelaId);
     if (parcelaError) return parcelaError.message;
 
-    // Compute new status from all parcelas (optimistic: treat this one as paga)
-    const parcelasAtualizadas = op.parcelas.map(p =>
-      p.id === parcelaId ? { ...p, status: 'paga' } : p
-    );
-    const novoStatusOp = calcularStatusOperacao(parcelasAtualizadas);
+    let novaParcelaValor = 0;
+    let novoStatusOp: Operacao['status'];
+
+    if (op.tipoCobranca === 'somente_juros') {
+      // "Somente Juros": gera automaticamente a próxima parcela de juros,
+      // a menos que o principal já tenha sido quitado (ver quitarPrincipal).
+      if (!op.principalQuitado) {
+        const proximoNumero = Math.max(...op.parcelas.map(p => p.numero)) + 1;
+        novaParcelaValor = Math.round(op.valorEnviado * op.taxaAplicada) / 100;
+        const { error: novaParcelaError } = await supabase.from('parcelas').insert({
+          operacao_id: operacaoId,
+          numero: proximoNumero,
+          valor: novaParcelaValor,
+          vencimento: addMonths(hoje, 1),
+          status: 'pendente',
+        });
+        if (novaParcelaError) return novaParcelaError.message;
+        novoStatusOp = 'em_aberto';
+      } else {
+        novoStatusOp = 'pago';
+      }
+    } else {
+      // Compute new status from all parcelas (optimistic: treat this one as paga)
+      const parcelasAtualizadas = op.parcelas.map(p =>
+        p.id === parcelaId ? { ...p, status: 'paga' } : p
+      );
+      novoStatusOp = calcularStatusOperacao(parcelasAtualizadas);
+    }
 
     const { error: opError } = await supabase
       .from('operacoes')
-      .update({ status: novoStatusOp })
+      .update({
+        status: novoStatusOp,
+        ...(novaParcelaValor > 0 && { valor_total_receber: op.valorTotalReceber + novaParcelaValor }),
+      })
       .eq('id', operacaoId);
     if (opError) return opError.message;
 
@@ -534,12 +560,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
 
     const cliente = clientes.find(c => c.id === op.clienteId);
+    const descricaoParcela = op.tipoCobranca === 'somente_juros'
+      ? `Juros #${parcela.numero} - ${cliente?.nome ?? 'cliente'}`
+      : `Parcela ${parcela.numero}/${op.quantidadeParcelas} - ${cliente?.nome ?? 'cliente'}`;
     // Bug 3: Include operacao_id so cascade delete works (migration 004)
     await supabase.from('movimentacoes').insert({
       data: hoje,
       tipo: 'entrada',
       categoria: 'Recebimento',
-      descricao: `Parcela ${parcela.numero}/${op.quantidadeParcelas} - ${cliente?.nome ?? 'cliente'}`,
+      descricao: descricaoParcela,
       valor: parcela.valor,
       origem: 'operacao',
       forma_pagamento: 'Pix',
