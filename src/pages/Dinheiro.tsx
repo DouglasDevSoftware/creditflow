@@ -258,7 +258,12 @@ export default function Dinheiro() {
                           <td className="px-3 py-2 text-xs" style={{ color: 'var(--text-primary)' }}>{formatDate(op.dataTransacao)}</td>
                           <td className="px-3 py-2 text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{getClienteNome(op.clienteId)}</td>
                           <td className="px-3 py-2 text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{formatCurrency(op.valorEnviado)}</td>
-                          <td className="px-3 py-2 text-xs" style={{ color: 'var(--text-secondary)' }}>{op.taxaAplicada}%</td>
+                          <td className="px-3 py-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                            {op.taxaAplicada}%
+                            {op.tipoCobranca === 'somente_juros' && (
+                              <span className="ml-1.5 px-1.5 py-0.5 rounded text-[10px] font-semibold" style={{ background: 'rgba(59,130,246,0.12)', color: '#60a5fa' }}>Juros</span>
+                            )}
+                          </td>
                           <td className="px-3 py-2"><StatusBadge status={op.status} /></td>
                         </tr>
                       ))}
