@@ -52,6 +52,9 @@ export interface Operacao {
   valorEnviado: number;
   taxaAplicada: number;
   valorTotalReceber: number;
+  tipoCobranca: 'total' | 'somente_juros';
+  principalQuitado: boolean;
+  dataQuitacaoPrincipal: string | null;
   formaPagamento: 'avista' | 'parcelado';
   quantidadeParcelas: number;
   parcelas: Parcela[];
