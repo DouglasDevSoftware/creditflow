@@ -29,17 +29,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: current } }) => {
+    supabase.auth.getSession().then(async ({ data: { session: current } }) => {
       setSession(current);
       setUser(current?.user ?? null);
-      checkAdmin(current?.user ?? null);
+      await checkAdmin(current?.user ?? null);
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, current) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, current) => {
       setSession(current);
       setUser(current?.user ?? null);
-      checkAdmin(current?.user ?? null);
+      await checkAdmin(current?.user ?? null);
       setLoading(false);
     });
 
