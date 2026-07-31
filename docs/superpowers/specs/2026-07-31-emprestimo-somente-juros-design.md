@@ -38,7 +38,7 @@ Novas colunas em `operacoes` (migration `006_operacao_somente_juros.sql`):
 | Coluna | Tipo | Default | Descrição |
 |---|---|---|---|
 | `tipo_cobranca` | ENUM `'total' \| 'somente_juros'` | `'total'` | Define o modelo de cobrança. Só pode ser `'somente_juros'` quando `fonte = 'dinheiro'` (constraint `CHECK`). |
-| `principal_quitado` | BOOLEAN | `false` | Vira `true` quando o usuário aciona "Quitar Principal". Sempre `true` para operações `tipo_cobranca = 'total'` assim que a última parcela é paga (ver seção Status). |
+| `principal_quitado` | BOOLEAN | `false` | Só é relevante para `tipo_cobranca = 'somente_juros'`: vira `true` quando o usuário aciona "Quitar Principal". Para operações `'total'`, permanece sempre `false` e não é usado em nenhuma lógica. |
 | `data_quitacao_principal` | DATE | `NULL` | Data em que o principal foi quitado. |
 
 `valor_total_receber` passa a ter semânticas diferentes por modo:
