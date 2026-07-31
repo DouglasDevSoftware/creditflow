@@ -150,7 +150,7 @@ export default function Dashboard() {
           icon={<CreditCard className="w-4 h-4" />}
           color="blue"
           primary
-          trend={{ value: `${((totalDisponivel / totalLimite) * 100).toFixed(0)}% do total`, direction: 'neutral' }}
+          trend={{ value: `${totalLimite > 0 ? ((totalDisponivel / totalLimite) * 100).toFixed(0) : '0'}% do total`, direction: 'neutral' }}
         />
         <KPICard
           title="Total a Receber"
