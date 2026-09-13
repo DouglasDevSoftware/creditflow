@@ -100,17 +100,35 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes floatBlob {
-  0%, 100% { transform: translate(0, 0); }
-  50%      { transform: translate(0, -18px); }
-}
-
 .auth-card {
   animation: authIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.auth-blob {
-  animation: floatBlob 10s ease-in-out infinite;
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  animation: revealUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes mockupFloat {
+  0%, 100% { transform: perspective(1400px) rotateY(-9deg) rotateX(4deg) translateY(0); }
+  50%      { transform: perspective(1400px) rotateY(-9deg) rotateX(4deg) translateY(-12px); }
+}
+
+.mockup-float {
+  animation: mockupFloat 7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-card, .reveal, .mockup-float, .auth-blob {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 /* ── Shared glass UI primitives (cards, buttons, modals) ─── */

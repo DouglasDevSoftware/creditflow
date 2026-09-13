@@ -72,18 +72,18 @@ export default function Login() {
 
   return (
     <AuthLayout>
-      <div className="w-full max-w-[400px]">
+      <div className="w-full max-w-[340px]">
         {/* Mobile-only brand header */}
         <div className="flex lg:hidden flex-col items-center mb-6">
-          <img src="/creditflow-icon.png" alt="" width={52} height={52} className="logo-badge mb-3" />
-          <span className="brand-wordmark text-white text-[19px]">
+          <img src="/creditflow-icon.png" alt="" width={48} height={48} className="logo-badge mb-3" />
+          <span className="brand-wordmark text-white text-[18px]">
             Credit<span className="brand-flow">Flow</span>
           </span>
           <p className="text-[11px] font-medium uppercase tracking-[1px] mt-1" style={{ color: 'var(--text-tertiary)' }}>Empréstimos &amp; Finanças Pessoais</p>
         </div>
 
         <div
-          className="auth-card w-full rounded-[20px] p-7 sm:p-8"
+          className="auth-card w-full rounded-[18px] p-6"
           style={{
             background: 'var(--glass-bg)',
             backdropFilter: 'var(--glass-blur)',
@@ -92,8 +92,8 @@ export default function Login() {
             boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
           }}
         >
-          <div className="mb-6">
-            <h1 className="text-[20px] font-extrabold" style={{ color: 'var(--text-primary)' }}>
+          <div className="mb-5">
+            <h1 className="text-[18px] font-extrabold" style={{ color: 'var(--text-primary)' }}>
               {mode === 'login' && 'Bem-vindo de volta'}
               {mode === 'signup' && 'Criar sua conta'}
               {mode === 'forgot' && 'Redefinir senha'}

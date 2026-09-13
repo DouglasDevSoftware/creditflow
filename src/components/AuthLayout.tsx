@@ -1,99 +1,91 @@
 import type { ReactNode } from 'react';
-import { CreditCard, Users, HandCoins, FileBarChart, ShieldCheck } from 'lucide-react';
+import { CreditCard, Users, HandCoins, FileBarChart } from 'lucide-react';
 
 interface AuthLayoutProps {
   children: ReactNode;
 }
 
 const features = [
-  { icon: CreditCard,   title: 'Cartões & Limites', desc: 'Acompanhe limite usado, disponível e comprometido em tempo real.', color: '#00d5c4', bg: 'rgba(0,213,196,0.10)', border: 'rgba(0,213,196,0.22)' },
-  { icon: Users,        title: 'Clientes',          desc: 'Histórico completo, situação e inadimplência por cliente.',        color: '#60a5fa', bg: 'rgba(59,130,246,0.10)', border: 'rgba(59,130,246,0.22)' },
-  { icon: HandCoins,    title: 'Operações',         desc: 'Controle de parcelas, vencimentos e recebimentos via Pix.',        color: '#10f2b0', bg: 'rgba(16,242,176,0.10)', border: 'rgba(16,242,176,0.22)' },
-  { icon: FileBarChart, title: 'Relatórios',        desc: 'Fluxo de caixa, lucro estimado e projeções financeiras.',          color: '#a78bfa', bg: 'rgba(139,92,246,0.10)', border: 'rgba(139,92,246,0.22)' },
+  { icon: CreditCard,   title: 'Cartões & Limites', color: '#00d5c4', bg: 'rgba(0,213,196,0.10)',  border: 'rgba(0,213,196,0.24)' },
+  { icon: Users,        title: 'Clientes',          color: '#60a5fa', bg: 'rgba(59,130,246,0.10)', border: 'rgba(59,130,246,0.24)' },
+  { icon: HandCoins,    title: 'Operações via Pix', color: '#10f2b0', bg: 'rgba(16,242,176,0.10)', border: 'rgba(16,242,176,0.24)' },
+  { icon: FileBarChart, title: 'Relatórios',        color: '#a78bfa', bg: 'rgba(139,92,246,0.10)', border: 'rgba(139,92,246,0.24)' },
 ];
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="relative min-h-screen flex overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
-      {/* Glow blobs */}
-      <div
-        className="auth-blob pointer-events-none absolute -top-32 -left-24 w-[440px] h-[440px] rounded-full"
-        style={{ background: 'rgba(0,213,196,0.16)', filter: 'blur(120px)' }}
-      />
-      <div
-        className="auth-blob pointer-events-none absolute bottom-[-170px] right-[-130px] w-[440px] h-[440px] rounded-full"
-        style={{ background: 'rgba(16,242,176,0.11)', filter: 'blur(130px)', animationDelay: '-5s' }}
-      />
-      {/* Dot grid texture */}
+    <div className="relative min-h-screen flex" style={{ background: 'var(--bg-primary)' }}>
+      {/* Ambient wash — one soft light source, not decorative corner blobs */}
       <div
         className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage: 'radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
-          backgroundSize: '26px 26px',
-          maskImage: 'radial-gradient(ellipse 75% 55% at 50% 0%, black 30%, transparent 100%)',
-          WebkitMaskImage: 'radial-gradient(ellipse 75% 55% at 50% 0%, black 30%, transparent 100%)',
-        }}
+        style={{ background: 'radial-gradient(ellipse 60% 50% at 12% 8%, rgba(0,213,196,0.10), transparent 65%)' }}
       />
 
-      {/* Left branding panel (desktop only) */}
+      {/* Hero column (desktop only) — dominant, product-led */}
       <div
-        className="hidden lg:flex flex-col justify-between w-[44%] max-w-[560px] relative z-10 px-14 py-12 shrink-0"
+        className="hidden lg:flex flex-1 flex-col justify-center relative z-10 px-16 xl:px-20 py-12"
         style={{ borderRight: '1px solid var(--glass-border)' }}
       >
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <img src="/creditflow-icon.png" alt="" width={46} height={46} className="logo-badge shrink-0" />
-            <div>
-              <span className="brand-wordmark block text-white text-[21px] leading-none">
-                Credit<span className="brand-flow">Flow</span>
-              </span>
-              <span className="block text-[10.5px] font-medium uppercase tracking-[1.2px] mt-1" style={{ color: 'var(--text-tertiary)' }}>
-                Empréstimos &amp; Finanças Pessoais
-              </span>
-            </div>
+        <div className="max-w-[560px]">
+          <div className="reveal flex items-center gap-2.5" style={{ animationDelay: '0.05s' }}>
+            <img src="/creditflow-icon.png" alt="" width={30} height={30} className="logo-badge shrink-0" />
+            <span className="brand-wordmark text-white text-[15px]">
+              Credit<span className="brand-flow">Flow</span>
+            </span>
           </div>
 
           <h1
-            className="text-[34px] font-extrabold leading-[1.15] mt-11 mb-4"
-            style={{ color: 'var(--text-primary)', letterSpacing: '-0.5px' }}
+            className="reveal text-[44px] xl:text-[52px] font-extrabold leading-[1.05] mt-8 mb-5"
+            style={{ color: 'var(--text-primary)', letterSpacing: '-1.2px', animationDelay: '0.14s' }}
           >
-            Do limite do cartão<br />ao lucro no bolso.
+            Do limite do cartão<br />ao <span className="brand-flow">lucro</span> no bolso.
           </h1>
-          <p className="text-[14px] leading-relaxed max-w-[380px] mb-10" style={{ color: 'var(--text-secondary)' }}>
-            Gerencie operações de empréstimo via cartão de crédito com controle total de limites,
-            clientes, parcelas e fluxo de caixa em um só lugar.
+          <p className="reveal text-[15px] leading-relaxed max-w-[420px] mb-6" style={{ color: 'var(--text-secondary)', animationDelay: '0.22s' }}>
+            Controle de empréstimos via cartão de crédito: limites, clientes, parcelas e fluxo de caixa em um só painel.
           </p>
 
-          <div className="space-y-3">
+          <div className="reveal flex flex-wrap gap-2" style={{ animationDelay: '0.3s' }}>
             {features.map(f => (
-              <div
+              <span
                 key={f.title}
-                className="flex items-start gap-3 p-3 rounded-[12px] transition-colors duration-200"
-                style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}
+                className="inline-flex items-center gap-1.5 pl-2 pr-3 py-1.5 rounded-full text-[12px] font-medium"
+                style={{ background: f.bg, border: `1px solid ${f.border}`, color: f.color }}
               >
-                <div
-                  className="w-8 h-8 rounded-[9px] flex items-center justify-center shrink-0"
-                  style={{ background: f.bg, border: `1px solid ${f.border}`, color: f.color }}
-                >
-                  <f.icon className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-[13px] font-semibold" style={{ color: 'var(--text-primary)' }}>{f.title}</p>
-                  <p className="text-[12px] mt-0.5 leading-snug" style={{ color: 'var(--text-tertiary)' }}>{f.desc}</p>
-                </div>
-              </div>
+                <f.icon className="w-3.5 h-3.5" /> {f.title}
+              </span>
             ))}
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-[12px]" style={{ color: 'var(--text-muted)' }}>
-          <ShieldCheck className="w-4 h-4 shrink-0" style={{ color: 'var(--accent)' }} />
-          Dados isolados por conta • Sessão segura via Supabase Auth
+        {/* Floating product preview — real screenshot, not fake UI chrome */}
+        <div className="reveal relative mt-12 max-w-[600px]" style={{ animationDelay: '0.4s' }}>
+          <div
+            className="pointer-events-none absolute -inset-16 rounded-[40px]"
+            style={{ background: 'radial-gradient(ellipse 60% 60% at 45% 45%, rgba(0,213,196,0.16), transparent 70%)', filter: 'blur(6px)' }}
+          />
+          <div
+            className="mockup-float relative rounded-[14px] overflow-hidden"
+            style={{
+              transform: 'perspective(1400px) rotateY(-9deg) rotateX(4deg)',
+              boxShadow: '0 50px 90px -25px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.07)',
+            }}
+          >
+            <img
+              src="/dashboard-preview.png"
+              alt="Painel do CreditFlow mostrando patrimônio disponível, valores a receber e gráficos de entradas e saídas"
+              className="block w-full h-auto"
+              width={1156}
+              height={720}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Right panel — form content */}
-      <div className="flex-1 flex items-center justify-center relative z-10 p-4 sm:p-6">
+      {/* Auth rail — compact, docked to the right edge */}
+      <div
+        className="flex-1 lg:flex-none lg:w-[400px] flex items-center justify-center relative z-10 px-5 sm:px-8 py-10"
+        style={{ background: 'rgba(0,0,0,0.12)' }}
+      >
         {children}
       </div>
     </div>

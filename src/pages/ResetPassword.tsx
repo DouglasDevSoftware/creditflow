@@ -42,17 +42,17 @@ export default function ResetPassword() {
 
   return (
     <AuthLayout>
-      <div className="w-full max-w-[400px]">
+      <div className="w-full max-w-[340px]">
         {/* Mobile-only brand header */}
         <div className="flex lg:hidden flex-col items-center mb-6">
-          <img src="/creditflow-icon.png" alt="" width={52} height={52} className="logo-badge mb-3" />
-          <span className="brand-wordmark text-white text-[19px]">
+          <img src="/creditflow-icon.png" alt="" width={48} height={48} className="logo-badge mb-3" />
+          <span className="brand-wordmark text-white text-[18px]">
             Credit<span className="brand-flow">Flow</span>
           </span>
         </div>
 
         <div
-          className="auth-card w-full rounded-[20px] p-7 sm:p-8"
+          className="auth-card w-full rounded-[18px] p-6"
           style={{
             background: 'var(--glass-bg)',
             backdropFilter: 'var(--glass-blur)',
