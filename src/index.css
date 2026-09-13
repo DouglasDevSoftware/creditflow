@@ -30,7 +30,7 @@
   --color-danger-600: #dc2626;
   --color-danger-700: #b91c1c;
 
-  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-display: "Fredoka", "Plus Jakarta Sans", sans-serif;
   --font-body:    "Plus Jakarta Sans", sans-serif;
 }
 
@@ -51,6 +51,7 @@
   /* ── Accent (Teal Neon) ──────────────── */
   --accent:      #00d5c4;
   --accent-dark: #00a896;
+  --brand-green: #10f2b0; /* "Flow" wordmark green, sampled from the app icon */
 
   /* ── Semantic colors ─────────────────── */
   --success: #10b981;
@@ -192,6 +193,27 @@
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--glass-border);
   border-radius: 10px;
+}
+
+/* ── Brand mark ──────────────────────────────── */
+.brand-wordmark {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+.brand-flow {
+  background: linear-gradient(120deg, var(--accent), var(--brand-green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.logo-badge {
+  display: block;
+  object-fit: cover;
+  border-radius: 22%;
+  box-shadow: 0 0 18px rgba(0, 213, 196, 0.35);
 }
 
 /* ── Base ────────────────────────────────────── */

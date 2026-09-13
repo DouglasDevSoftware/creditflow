@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Wallet, Mail, Lock, Loader2, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Loader2, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { isSupabaseConfigured } from '../lib/supabase';
 import AuthLayout from '../components/AuthLayout';
@@ -75,16 +75,11 @@ export default function Login() {
       <div className="w-full max-w-[400px]">
         {/* Mobile-only brand header */}
         <div className="flex lg:hidden flex-col items-center mb-6">
-          <div
-            className="w-12 h-12 rounded-[12px] flex items-center justify-center mb-3"
-            style={{ background: 'linear-gradient(135deg, #00d5c4, #00876e)', boxShadow: '0 0 18px rgba(0,213,196,0.4)' }}
-          >
-            <Wallet className="w-6 h-6 text-white" />
-          </div>
-          <span className="font-extrabold tracking-tight text-white text-[18px]">
-            Credit<span style={{ color: 'var(--accent)' }}>Flow</span>
+          <img src="/creditflow-icon.png" alt="" width={52} height={52} className="logo-badge mb-3" />
+          <span className="brand-wordmark text-white text-[19px]">
+            Credit<span className="brand-flow">Flow</span>
           </span>
-          <p className="text-[12px] mt-1" style={{ color: 'var(--text-tertiary)' }}>Gestão de empréstimos via cartão</p>
+          <p className="text-[11px] font-medium uppercase tracking-[1px] mt-1" style={{ color: 'var(--text-tertiary)' }}>Empréstimos &amp; Finanças Pessoais</p>
         </div>
 
         <div

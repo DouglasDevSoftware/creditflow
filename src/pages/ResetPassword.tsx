@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Wallet, Lock, Loader2, Eye, EyeOff, KeyRound } from 'lucide-react';
+import { Lock, Loader2, Eye, EyeOff, KeyRound } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import AuthLayout from '../components/AuthLayout';
@@ -45,14 +45,9 @@ export default function ResetPassword() {
       <div className="w-full max-w-[400px]">
         {/* Mobile-only brand header */}
         <div className="flex lg:hidden flex-col items-center mb-6">
-          <div
-            className="w-12 h-12 rounded-[12px] flex items-center justify-center mb-3"
-            style={{ background: 'linear-gradient(135deg, #00d5c4, #00876e)', boxShadow: '0 0 18px rgba(0,213,196,0.4)' }}
-          >
-            <Wallet className="w-6 h-6 text-white" />
-          </div>
-          <span className="font-extrabold tracking-tight text-white text-[18px]">
-            Credit<span style={{ color: 'var(--accent)' }}>Flow</span>
+          <img src="/creditflow-icon.png" alt="" width={52} height={52} className="logo-badge mb-3" />
+          <span className="brand-wordmark text-white text-[19px]">
+            Credit<span className="brand-flow">Flow</span>
           </span>
         </div>
 

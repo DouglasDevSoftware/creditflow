@@ -1,15 +1,15 @@
 import type { ReactNode } from 'react';
-import { Wallet, CreditCard, Users, HandCoins, FileBarChart, ShieldCheck } from 'lucide-react';
+import { CreditCard, Users, HandCoins, FileBarChart, ShieldCheck } from 'lucide-react';
 
 interface AuthLayoutProps {
   children: ReactNode;
 }
 
 const features = [
-  { icon: CreditCard,   title: 'Cartões & Limites', desc: 'Acompanhe limite usado, disponível e comprometido em tempo real.' },
-  { icon: Users,        title: 'Clientes',          desc: 'Histórico completo, situação e inadimplência por cliente.' },
-  { icon: HandCoins,    title: 'Operações',         desc: 'Controle de parcelas, vencimentos e recebimentos via Pix.' },
-  { icon: FileBarChart, title: 'Relatórios',        desc: 'Fluxo de caixa, lucro estimado e projeções financeiras.' },
+  { icon: CreditCard,   title: 'Cartões & Limites', desc: 'Acompanhe limite usado, disponível e comprometido em tempo real.', color: '#00d5c4', bg: 'rgba(0,213,196,0.10)', border: 'rgba(0,213,196,0.22)' },
+  { icon: Users,        title: 'Clientes',          desc: 'Histórico completo, situação e inadimplência por cliente.',        color: '#60a5fa', bg: 'rgba(59,130,246,0.10)', border: 'rgba(59,130,246,0.22)' },
+  { icon: HandCoins,    title: 'Operações',         desc: 'Controle de parcelas, vencimentos e recebimentos via Pix.',        color: '#10f2b0', bg: 'rgba(16,242,176,0.10)', border: 'rgba(16,242,176,0.22)' },
+  { icon: FileBarChart, title: 'Relatórios',        desc: 'Fluxo de caixa, lucro estimado e projeções financeiras.',          color: '#a78bfa', bg: 'rgba(139,92,246,0.10)', border: 'rgba(139,92,246,0.22)' },
 ];
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
@@ -17,12 +17,12 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
     <div className="relative min-h-screen flex overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
       {/* Glow blobs */}
       <div
-        className="auth-blob pointer-events-none absolute -top-32 -left-24 w-[420px] h-[420px] rounded-full"
+        className="auth-blob pointer-events-none absolute -top-32 -left-24 w-[440px] h-[440px] rounded-full"
         style={{ background: 'rgba(0,213,196,0.16)', filter: 'blur(120px)' }}
       />
       <div
-        className="auth-blob pointer-events-none absolute bottom-[-160px] right-[-120px] w-[420px] h-[420px] rounded-full"
-        style={{ background: 'rgba(167,139,250,0.12)', filter: 'blur(120px)', animationDelay: '-5s' }}
+        className="auth-blob pointer-events-none absolute bottom-[-170px] right-[-130px] w-[440px] h-[440px] rounded-full"
+        style={{ background: 'rgba(16,242,176,0.11)', filter: 'blur(130px)', animationDelay: '-5s' }}
       />
       {/* Dot grid texture */}
       <div
@@ -41,20 +41,20 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         style={{ borderRight: '1px solid var(--glass-border)' }}
       >
         <div>
-          <div className="flex items-center gap-3 mb-14">
-            <div
-              className="w-11 h-11 rounded-[12px] flex items-center justify-center shrink-0"
-              style={{ background: 'linear-gradient(135deg, #00d5c4, #00876e)', boxShadow: '0 0 20px rgba(0,213,196,0.45)' }}
-            >
-              <Wallet className="w-5 h-5 text-white" />
+          <div className="flex items-center gap-3 mb-1">
+            <img src="/creditflow-icon.png" alt="" width={46} height={46} className="logo-badge shrink-0" />
+            <div>
+              <span className="brand-wordmark block text-white text-[21px] leading-none">
+                Credit<span className="brand-flow">Flow</span>
+              </span>
+              <span className="block text-[10.5px] font-medium uppercase tracking-[1.2px] mt-1" style={{ color: 'var(--text-tertiary)' }}>
+                Empréstimos &amp; Finanças Pessoais
+              </span>
             </div>
-            <span className="font-extrabold tracking-tight text-white text-[19px]">
-              Credit<span style={{ color: 'var(--accent)' }}>Flow</span>
-            </span>
           </div>
 
           <h1
-            className="text-[34px] font-extrabold leading-[1.15] mb-4"
+            className="text-[34px] font-extrabold leading-[1.15] mt-11 mb-4"
             style={{ color: 'var(--text-primary)', letterSpacing: '-0.5px' }}
           >
             Do limite do cartão<br />ao lucro no bolso.
@@ -68,12 +68,12 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             {features.map(f => (
               <div
                 key={f.title}
-                className="flex items-start gap-3 p-3 rounded-[12px]"
+                className="flex items-start gap-3 p-3 rounded-[12px] transition-colors duration-200"
                 style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}
               >
                 <div
                   className="w-8 h-8 rounded-[9px] flex items-center justify-center shrink-0"
-                  style={{ background: 'rgba(0,213,196,0.10)', border: '1px solid rgba(0,213,196,0.22)', color: 'var(--accent)' }}
+                  style={{ background: f.bg, border: `1px solid ${f.border}`, color: f.color }}
                 >
                   <f.icon className="w-4 h-4" />
                 </div>

@@ -55,18 +55,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           className="flex items-center gap-3 px-[13px] py-5 shrink-0"
           style={{ borderBottom: '1px solid var(--glass-border)' }}
         >
-          <div
-            className="shrink-0 flex items-center justify-center rounded-[10px]"
-            style={{
-              width: 36, height: 36,
-              background: 'linear-gradient(135deg, #00d5c4, #00876e)',
-              boxShadow: '0 0 16px rgba(0,213,196,0.45)',
-            }}
-          >
-            <Wallet className="w-4 h-4 text-white" />
-          </div>
-          <span className="sidebar-logo-text font-extrabold tracking-tight text-white text-[15px]">
-            Credit<span style={{ color: 'var(--accent)' }}>Flow</span>
+          <img src="/creditflow-icon.png" alt="" width={36} height={36} className="logo-badge shrink-0" />
+          <span className="sidebar-logo-text brand-wordmark text-white text-[15px]">
+            Credit<span className="brand-flow">Flow</span>
           </span>
           <button
             onClick={onClose}
