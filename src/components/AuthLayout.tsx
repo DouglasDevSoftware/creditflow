@@ -14,13 +14,14 @@ const features = [
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="relative min-h-screen flex" style={{ background: 'var(--bg-primary)' }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: 'var(--bg-primary)' }}>
       {/* Ambient wash — one soft light source, not decorative corner blobs */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{ background: 'radial-gradient(ellipse 60% 50% at 12% 8%, rgba(0,213,196,0.10), transparent 65%)' }}
       />
 
+      <div className="flex-1 flex">
       {/* Hero column (desktop only) — dominant, product-led */}
       <div
         className="hidden lg:flex flex-1 flex-col justify-center relative z-10 px-16 xl:px-24 py-12 overflow-hidden"
@@ -111,6 +112,20 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         />
         {children}
       </div>
+      </div>
+
+      {/* Footer — developer credit */}
+      <footer
+        className="relative z-10 flex items-center justify-center gap-2.5 py-3.5 shrink-0"
+        style={{ borderTop: '1px solid var(--glass-border)', background: 'rgba(0,0,0,0.15)' }}
+      >
+        <span className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>Desenvolvido por</span>
+        <img
+          src="/dg-systems-logo.png"
+          alt="DG Systems"
+          style={{ height: 22, width: 'auto', borderRadius: 4, boxShadow: '0 1px 6px rgba(0,0,0,0.35)' }}
+        />
+      </footer>
     </div>
   );
 }
