@@ -98,8 +98,7 @@ export default function Cartoes() {
     );
   }
 
-  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm";
-  const inputStyle = { borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' };
+  const inputCls = "w-full px-3 py-2 input-glass text-sm";
 
   return (
     <div className="space-y-6">
@@ -108,7 +107,7 @@ export default function Cartoes() {
           <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Cartões</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Gerencie seus cartões de crédito</p>
         </div>
-        <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2.5 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 transition-colors shadow-sm">
+        <button onClick={() => setShowForm(true)} className="btn-primary flex items-center gap-2 px-4 py-2.5 text-sm">
           <Plus className="w-4 h-4" /> Novo Cartão
         </button>
       </div>
@@ -122,8 +121,8 @@ export default function Cartoes() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {cartoes.length === 0 && (
-          <div className="col-span-full flex flex-col items-center justify-center py-16 rounded-xl border text-center"
-            style={{ borderColor: 'var(--border-color)', color: 'var(--text-tertiary)' }}>
+          <div className="gc-card col-span-full flex flex-col items-center justify-center py-16 text-center"
+            style={{ color: 'var(--text-tertiary)' }}>
             <CreditCard className="w-12 h-12 mb-3 opacity-30" />
             <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Nenhum cartão cadastrado.</p>
             <p className="text-xs mt-1">Adicione um cartão de crédito para começar.</p>
@@ -133,54 +132,56 @@ export default function Cartoes() {
           const percentUsado = ((cartao.limiteTotal - cartao.limiteDisponivel) / cartao.limiteTotal) * 100;
           const ops = getCartaoOperacoes(cartao.id);
           return (
-            <div key={cartao.id} className="rounded-xl border p-5 hover:shadow-lg transition-all"
-              style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
-              <div className="flex items-start justify-between mb-3">
+            <div key={cartao.id} className="gc-card relative overflow-hidden p-5">
+              <div
+                className="absolute top-[-24px] right-[-24px] w-[90px] h-[90px] rounded-full pointer-events-none"
+                style={{ background: 'rgba(0,213,196,0.14)', filter: 'blur(30px)' }}
+              />
+              <div className="relative flex items-start justify-between mb-3">
                 <div>
                   <h3 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{cartao.nome}</h3>
                   <p className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{cartao.banco} • {cartao.bandeira}</p>
                 </div>
                 <StatusBadge status={cartao.status} />
               </div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-xs font-mono tracking-widest px-2 py-1 rounded"
-                  style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}>
+              <div className="relative flex items-center gap-2 mb-3">
+                <span className="chip text-xs font-mono tracking-widest px-2 py-1" style={{ color: 'var(--text-secondary)' }}>
                   •••• {cartao.ultimos4}
                 </span>
               </div>
-              <div className="mb-3">
+              <div className="relative mb-3">
                 <div className="flex justify-between text-xs mb-1">
                   <span style={{ color: 'var(--text-tertiary)' }}>Utilizado</span>
                   <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{percentUsado.toFixed(0)}%</span>
                 </div>
-                <div className="w-full h-2 rounded-full" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="w-full h-2 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}>
                   <div className={`h-2 rounded-full transition-all ${percentUsado > 80 ? 'bg-danger-500' : percentUsado > 50 ? 'bg-warning-500' : 'bg-primary-500'}`}
                     style={{ width: `${Math.min(percentUsado, 100)}%` }} />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2 mb-3">
-                <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+              <div className="relative grid grid-cols-2 gap-2 mb-3">
+                <div className="chip p-2">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Disponível</p>
                   <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{formatCurrency(cartao.limiteDisponivel)}</p>
                 </div>
-                <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-2">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Transações</p>
                   <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{ops.length}</p>
                 </div>
               </div>
-              <div className="text-xs mb-3" style={{ color: 'var(--text-tertiary)' }}>
+              <div className="relative text-xs mb-3" style={{ color: 'var(--text-tertiary)' }}>
                 Vencimento: dia {cartao.vencimentoFatura} • Melhor compra: dia {cartao.melhorDiaCompra}
               </div>
-              <div className="flex gap-2 pt-3 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <button onClick={() => setSelectedCartao(cartao)} className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors" style={{ color: 'var(--text-secondary)' }}>
+              <div className="relative flex gap-2 pt-3" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                <button onClick={() => setSelectedCartao(cartao)} className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg hover:bg-white/5 transition-colors" style={{ color: 'var(--text-secondary)' }}>
                   <Eye className="w-3.5 h-3.5" /> Detalhes
                 </button>
                 <button onClick={() => { setSelectedCartao(cartao); handleOpenEdit(cartao); }}
-                  className="flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors" style={{ color: 'var(--text-secondary)' }}>
+                  className="flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-lg hover:bg-white/5 transition-colors" style={{ color: 'var(--text-secondary)' }}>
                   <Pencil className="w-3.5 h-3.5" />
                 </button>
                 <button onClick={() => setConfirmDelete({ id: cartao.id, nome: cartao.nome })}
-                  className="flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 text-danger-500 transition-colors">
+                  className="btn-danger-ghost flex items-center justify-center px-3 py-1.5 text-xs font-medium">
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -192,55 +193,54 @@ export default function Cartoes() {
       {/* Detail Modal */}
       {selectedCartao && !showEditForm && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedCartao(null)}>
-          <div className="w-full max-w-2xl max-h-[85vh] rounded-xl overflow-hidden flex flex-col"
-            style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="modal-shell w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <div>
                 <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{selectedCartao.nome}</h2>
                 <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>{selectedCartao.banco} • {selectedCartao.bandeira} • •••• {selectedCartao.ultimos4}</p>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => handleOpenEdit(selectedCartao)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]" title="Editar">
+                <button onClick={() => handleOpenEdit(selectedCartao)} className="p-2 rounded-lg hover:bg-white/5" title="Editar">
                   <Pencil className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
                 </button>
-                <button onClick={() => setSelectedCartao(null)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
+                <button onClick={() => setSelectedCartao(null)} className="p-2 rounded-lg hover:bg-white/5">
                   <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
                 </button>
               </div>
             </div>
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Limite Total</p>
                   <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{formatCurrency(selectedCartao.limiteTotal)}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Disponível</p>
                   <p className="text-sm font-bold text-success-600">{formatCurrency(selectedCartao.limiteDisponivel)}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Comprometido</p>
                   <p className="text-sm font-bold text-warning-600">{formatCurrency(selectedCartao.limiteTotal - selectedCartao.limiteDisponivel)}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Total Emprestado</p>
                   <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{formatCurrency(getCartaoTotalEmprestado(selectedCartao.id))}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>A Receber</p>
                   <p className="text-sm font-bold text-primary-600">{formatCurrency(getCartaoTotalReceber(selectedCartao.id))}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Transações</p>
                   <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{getCartaoOperacoes(selectedCartao.id).length}</p>
                 </div>
               </div>
               <div>
                 <h4 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Histórico de Operações</h4>
-                <div className="overflow-x-auto rounded-lg border" style={{ borderColor: 'var(--border-color)' }}>
+                <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
                   <table className="w-full">
                     <thead>
-                      <tr style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                      <tr style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
                         <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Data</th>
                         <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Cliente</th>
                         <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Enviado</th>
@@ -251,7 +251,7 @@ export default function Cartoes() {
                     </thead>
                     <tbody>
                       {getCartaoOperacoes(selectedCartao.id).map(op => (
-                        <tr key={op.id} className="border-t" style={{ borderColor: 'var(--border-color)' }}>
+                        <tr key={op.id} style={{ borderTop: '1px solid var(--glass-border)' }}>
                           <td className="px-3 py-2 text-xs" style={{ color: 'var(--text-primary)' }}>{formatDate(op.dataTransacao)}</td>
                           <td className="px-3 py-2 text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{getClienteNome(op.clienteId)}</td>
                           <td className="px-3 py-2 text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{formatCurrency(op.valorEnviado)}</td>
@@ -275,10 +275,10 @@ export default function Cartoes() {
       {/* Edit Modal */}
       {showEditForm && selectedCartao && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowEditForm(false)}>
-          <div className="w-full max-w-lg rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="modal-shell w-full max-w-lg overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Editar Cartão</h2>
-              <button onClick={() => setShowEditForm(false)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
+              <button onClick={() => setShowEditForm(false)} className="p-2 rounded-lg hover:bg-white/5">
                 <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
               </button>
             </div>
@@ -286,41 +286,41 @@ export default function Cartoes() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Nome do Cartão</label>
-                  <input value={editForm.nome ?? ''} onChange={e => setEditForm(f => ({ ...f, nome: e.target.value }))} className={inputCls} style={inputStyle} />
+                  <input value={editForm.nome ?? ''} onChange={e => setEditForm(f => ({ ...f, nome: e.target.value }))} className={inputCls} />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Banco/Emissor</label>
-                  <input value={editForm.banco ?? ''} onChange={e => setEditForm(f => ({ ...f, banco: e.target.value }))} className={inputCls} style={inputStyle} />
+                  <input value={editForm.banco ?? ''} onChange={e => setEditForm(f => ({ ...f, banco: e.target.value }))} className={inputCls} />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Bandeira</label>
-                  <select value={editForm.bandeira ?? 'Visa'} onChange={e => setEditForm(f => ({ ...f, bandeira: e.target.value }))} className={inputCls} style={inputStyle}>
+                  <select value={editForm.bandeira ?? 'Visa'} onChange={e => setEditForm(f => ({ ...f, bandeira: e.target.value }))} className={inputCls}>
                     <option>Visa</option><option>Mastercard</option><option>Elo</option><option>Amex</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Últimos 4 Números</label>
-                  <input value={editForm.ultimos4 ?? ''} onChange={e => setEditForm(f => ({ ...f, ultimos4: e.target.value }))} className={inputCls} style={inputStyle} maxLength={4} />
+                  <input value={editForm.ultimos4 ?? ''} onChange={e => setEditForm(f => ({ ...f, ultimos4: e.target.value }))} className={inputCls} maxLength={4} />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Limite Total</label>
-                  <input type="number" value={editForm.limiteTotal ?? ''} onChange={e => setEditForm(f => ({ ...f, limiteTotal: Number(e.target.value) }))} className={inputCls} style={inputStyle} />
+                  <input type="number" value={editForm.limiteTotal ?? ''} onChange={e => setEditForm(f => ({ ...f, limiteTotal: Number(e.target.value) }))} className={inputCls} />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Limite Disponível</label>
-                  <input type="number" value={editForm.limiteDisponivel ?? ''} onChange={e => setEditForm(f => ({ ...f, limiteDisponivel: Number(e.target.value) }))} className={inputCls} style={inputStyle} />
+                  <input type="number" value={editForm.limiteDisponivel ?? ''} onChange={e => setEditForm(f => ({ ...f, limiteDisponivel: Number(e.target.value) }))} className={inputCls} />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Vencimento Fatura (dia)</label>
-                  <input type="number" value={editForm.vencimentoFatura ?? ''} onChange={e => setEditForm(f => ({ ...f, vencimentoFatura: Number(e.target.value) }))} className={inputCls} style={inputStyle} min={1} max={31} />
+                  <input type="number" value={editForm.vencimentoFatura ?? ''} onChange={e => setEditForm(f => ({ ...f, vencimentoFatura: Number(e.target.value) }))} className={inputCls} min={1} max={31} />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Melhor Dia Compra</label>
-                  <input type="number" value={editForm.melhorDiaCompra ?? ''} onChange={e => setEditForm(f => ({ ...f, melhorDiaCompra: Number(e.target.value) }))} className={inputCls} style={inputStyle} min={1} max={31} />
+                  <input type="number" value={editForm.melhorDiaCompra ?? ''} onChange={e => setEditForm(f => ({ ...f, melhorDiaCompra: Number(e.target.value) }))} className={inputCls} min={1} max={31} />
                 </div>
                 <div className="col-span-2">
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Status</label>
-                  <select value={editForm.status ?? 'ativo'} onChange={e => setEditForm(f => ({ ...f, status: e.target.value as Cartao['status'] }))} className={inputCls} style={inputStyle}>
+                  <select value={editForm.status ?? 'ativo'} onChange={e => setEditForm(f => ({ ...f, status: e.target.value as Cartao['status'] }))} className={inputCls}>
                     <option value="ativo">Ativo</option>
                     <option value="bloqueado">Bloqueado</option>
                     <option value="cancelado">Cancelado</option>
@@ -328,10 +328,10 @@ export default function Cartoes() {
                 </div>
               </div>
               {formError && <p className="text-sm text-danger-600">{formError}</p>}
-              <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <button onClick={() => setShowEditForm(false)} className="px-4 py-2 text-sm font-medium rounded-lg border hover:bg-[var(--bg-tertiary)] transition-colors" style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>Cancelar</button>
+              <div className="flex justify-end gap-3 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                <button onClick={() => setShowEditForm(false)} className="btn-secondary px-4 py-2 text-sm">Cancelar</button>
                 <button onClick={handleSaveEdit} disabled={saving || !editForm.nome || !editForm.banco}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-60">
+                  className="btn-primary px-4 py-2 text-sm">
                   {saving ? 'Salvando...' : 'Salvar Alterações'}
                 </button>
               </div>
@@ -343,10 +343,10 @@ export default function Cartoes() {
       {/* New Card Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowForm(false)}>
-          <div className="w-full max-w-lg rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="modal-shell w-full max-w-lg overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Novo Cartão</h2>
-              <button onClick={() => setShowForm(false)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
+              <button onClick={() => setShowForm(false)} className="p-2 rounded-lg hover:bg-white/5">
                 <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
               </button>
             </div>
@@ -354,44 +354,44 @@ export default function Cartoes() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Nome do Cartão</label>
-                  <input value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} className={inputCls} style={inputStyle} placeholder="Ex: Nubank Platinum" />
+                  <input value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} className={inputCls} placeholder="Ex: Nubank Platinum" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Banco/Emissor</label>
-                  <input value={form.banco} onChange={e => setForm(f => ({ ...f, banco: e.target.value }))} className={inputCls} style={inputStyle} placeholder="Ex: Nubank" />
+                  <input value={form.banco} onChange={e => setForm(f => ({ ...f, banco: e.target.value }))} className={inputCls} placeholder="Ex: Nubank" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Bandeira</label>
-                  <select value={form.bandeira} onChange={e => setForm(f => ({ ...f, bandeira: e.target.value }))} className={inputCls} style={inputStyle}>
+                  <select value={form.bandeira} onChange={e => setForm(f => ({ ...f, bandeira: e.target.value }))} className={inputCls}>
                     <option>Visa</option><option>Mastercard</option><option>Elo</option><option>Amex</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Últimos 4 Números</label>
-                  <input value={form.ultimos4} onChange={e => setForm(f => ({ ...f, ultimos4: e.target.value }))} className={inputCls} style={inputStyle} placeholder="0000" maxLength={4} />
+                  <input value={form.ultimos4} onChange={e => setForm(f => ({ ...f, ultimos4: e.target.value }))} className={inputCls} placeholder="0000" maxLength={4} />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Limite Total</label>
-                  <input type="number" value={form.limiteTotal} onChange={e => setForm(f => ({ ...f, limiteTotal: e.target.value }))} className={inputCls} style={inputStyle} placeholder="0,00" />
+                  <input type="number" value={form.limiteTotal} onChange={e => setForm(f => ({ ...f, limiteTotal: e.target.value }))} className={inputCls} placeholder="0,00" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Limite Disponível</label>
-                  <input type="number" value={form.limiteDisponivel} onChange={e => setForm(f => ({ ...f, limiteDisponivel: e.target.value }))} className={inputCls} style={inputStyle} placeholder="0,00" />
+                  <input type="number" value={form.limiteDisponivel} onChange={e => setForm(f => ({ ...f, limiteDisponivel: e.target.value }))} className={inputCls} placeholder="0,00" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Vencimento Fatura (dia)</label>
-                  <input type="number" value={form.vencimentoFatura} onChange={e => setForm(f => ({ ...f, vencimentoFatura: e.target.value }))} className={inputCls} style={inputStyle} placeholder="10" min={1} max={31} />
+                  <input type="number" value={form.vencimentoFatura} onChange={e => setForm(f => ({ ...f, vencimentoFatura: e.target.value }))} className={inputCls} placeholder="10" min={1} max={31} />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Melhor Dia Compra</label>
-                  <input type="number" value={form.melhorDiaCompra} onChange={e => setForm(f => ({ ...f, melhorDiaCompra: e.target.value }))} className={inputCls} style={inputStyle} placeholder="1" min={1} max={31} />
+                  <input type="number" value={form.melhorDiaCompra} onChange={e => setForm(f => ({ ...f, melhorDiaCompra: e.target.value }))} className={inputCls} placeholder="1" min={1} max={31} />
                 </div>
               </div>
               {formError && <p className="text-sm text-danger-600">{formError}</p>}
-              <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <button onClick={() => setShowForm(false)} className="px-4 py-2 text-sm font-medium rounded-lg border hover:bg-[var(--bg-tertiary)] transition-colors" style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>Cancelar</button>
+              <div className="flex justify-end gap-3 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                <button onClick={() => setShowForm(false)} className="btn-secondary px-4 py-2 text-sm">Cancelar</button>
                 <button onClick={handleSaveCartao} disabled={saving || !form.nome || !form.banco}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-60">
+                  className="btn-primary px-4 py-2 text-sm">
                   {saving ? 'Salvando...' : 'Salvar Cartão'}
                 </button>
               </div>

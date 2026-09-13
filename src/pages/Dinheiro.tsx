@@ -103,8 +103,7 @@ export default function Dinheiro() {
     );
   }
 
-  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm";
-  const inputStyle = { borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' };
+  const inputCls = "w-full px-3 py-2 input-glass text-sm";
 
   return (
     <div className="space-y-6">
@@ -113,7 +112,7 @@ export default function Dinheiro() {
           <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Dinheiro</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Capital próprio para empréstimos com juros definidos por você</p>
         </div>
-        <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2.5 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 transition-colors shadow-sm">
+        <button onClick={() => setShowForm(true)} className="btn-primary flex items-center gap-2 px-4 py-2.5 text-sm">
           <Plus className="w-4 h-4" /> Novo Fundo
         </button>
       </div>
@@ -127,8 +126,8 @@ export default function Dinheiro() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {fundosDinheiro.length === 0 && (
-          <div className="col-span-full flex flex-col items-center justify-center py-16 rounded-xl border text-center"
-            style={{ borderColor: 'var(--border-color)', color: 'var(--text-tertiary)' }}>
+          <div className="gc-card col-span-full flex flex-col items-center justify-center py-16 text-center"
+            style={{ color: 'var(--text-tertiary)' }}>
             <Banknote className="w-12 h-12 mb-3 opacity-30" />
             <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Nenhum fundo de dinheiro cadastrado.</p>
             <p className="text-xs mt-1">Adicione capital próprio para emprestar com a taxa de juros que você definir.</p>
@@ -140,8 +139,7 @@ export default function Dinheiro() {
             : 0;
           const ops = getFundoOperacoes(fundo.id);
           return (
-            <div key={fundo.id} className="rounded-xl border p-5 hover:shadow-lg transition-all"
-              style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
+            <div key={fundo.id} className="gc-card p-5">
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h3 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{fundo.nome}</h3>
@@ -154,31 +152,31 @@ export default function Dinheiro() {
                   <span style={{ color: 'var(--text-tertiary)' }}>Utilizado</span>
                   <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{percentUsado.toFixed(0)}%</span>
                 </div>
-                <div className="w-full h-2 rounded-full" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="w-full h-2 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
                   <div className={`h-2 rounded-full transition-all ${percentUsado > 80 ? 'bg-danger-500' : percentUsado > 50 ? 'bg-warning-500' : 'bg-success-500'}`}
                     style={{ width: `${Math.min(percentUsado, 100)}%` }} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2 mb-3">
-                <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-2">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Disponível</p>
                   <p className="text-sm font-bold text-success-600">{formatCurrency(fundo.valorDisponivel)}</p>
                 </div>
-                <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-2">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Operações</p>
                   <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{ops.length}</p>
                 </div>
               </div>
-              <div className="flex gap-2 pt-3 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <button onClick={() => setSelectedFundo(fundo)} className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors" style={{ color: 'var(--text-secondary)' }}>
+              <div className="flex gap-2 pt-3" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                <button onClick={() => setSelectedFundo(fundo)} className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg hover:bg-white/5 transition-colors" style={{ color: 'var(--text-secondary)' }}>
                   <Eye className="w-3.5 h-3.5" /> Detalhes
                 </button>
                 <button onClick={() => { setSelectedFundo(fundo); handleOpenEdit(fundo); }}
-                  className="flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors" style={{ color: 'var(--text-secondary)' }}>
+                  className="flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-lg hover:bg-white/5 transition-colors" style={{ color: 'var(--text-secondary)' }}>
                   <Pencil className="w-3.5 h-3.5" />
                 </button>
                 <button onClick={() => setConfirmDelete({ id: fundo.id, nome: fundo.nome })}
-                  className="flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 text-danger-500 transition-colors">
+                  className="btn-danger-ghost flex items-center justify-center px-3 py-1.5 text-xs font-medium">
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -190,62 +188,60 @@ export default function Dinheiro() {
       {/* Detail Modal */}
       {selectedFundo && !showEditForm && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => { setSelectedFundo(null); setShowAporte(false); }}>
-          <div className="w-full max-w-2xl max-h-[85vh] rounded-xl overflow-hidden flex flex-col"
-            style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col modal-shell" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <div>
                 <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{selectedFundo.nome}</h2>
                 <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Taxa padrão: {selectedFundo.taxaPadrao}%</p>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => handleOpenEdit(selectedFundo)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]" title="Editar">
+                <button onClick={() => handleOpenEdit(selectedFundo)} className="p-2 rounded-lg hover:bg-white/5" title="Editar">
                   <Pencil className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
                 </button>
-                <button onClick={() => { setSelectedFundo(null); setShowAporte(false); }} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
+                <button onClick={() => { setSelectedFundo(null); setShowAporte(false); }} className="p-2 rounded-lg hover:bg-white/5">
                   <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
                 </button>
               </div>
             </div>
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Investido</p>
                   <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{formatCurrency(selectedFundo.valorInvestido)}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Disponível</p>
                   <p className="text-sm font-bold text-success-600">{formatCurrency(selectedFundo.valorDisponivel)}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>A Receber</p>
                   <p className="text-sm font-bold text-primary-600">{formatCurrency(getFundoTotalReceber(selectedFundo.id))}</p>
                 </div>
               </div>
               <button onClick={() => setShowAporte(!showAporte)}
-                className="w-full py-2 text-sm font-medium rounded-lg border hover:bg-[var(--bg-tertiary)] transition-colors"
-                style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>
+                className="btn-secondary w-full py-2 text-sm">
                 + Aportar mais capital
               </button>
               {showAporte && (
                 <div className="flex gap-2">
                   <input type="number" value={valorAporte} onChange={e => setValorAporte(e.target.value)}
-                    placeholder="Valor do aporte" className="flex-1 px-3 py-2 rounded-lg border text-sm" style={inputStyle} />
+                    placeholder="Valor do aporte" className="flex-1 px-3 py-2 input-glass text-sm" />
                   <button onClick={handleAporte} disabled={saving || !valorAporte}
-                    className="px-4 py-2 text-sm font-medium rounded-lg bg-primary-600 text-white disabled:opacity-60">
+                    className="btn-primary px-4 py-2 text-sm">
                     {saving ? 'Aguarde...' : 'Confirmar'}
                   </button>
                 </div>
               )}
               {formError && <p className="text-sm text-danger-600">{formError}</p>}
               {selectedFundo.observacoes && (
-                <p className="text-sm p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}>{selectedFundo.observacoes}</p>
+                <p className="chip text-sm p-3" style={{ color: 'var(--text-primary)' }}>{selectedFundo.observacoes}</p>
               )}
               <div>
                 <h4 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Operações com este fundo</h4>
-                <div className="overflow-x-auto rounded-lg border" style={{ borderColor: 'var(--border-color)' }}>
+                <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
                   <table className="w-full">
                     <thead>
-                      <tr style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                      <tr style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
                         <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Data</th>
                         <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Cliente</th>
                         <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Valor</th>
@@ -255,7 +251,7 @@ export default function Dinheiro() {
                     </thead>
                     <tbody>
                       {getFundoOperacoes(selectedFundo.id).map(op => (
-                        <tr key={op.id} className="border-t" style={{ borderColor: 'var(--border-color)' }}>
+                        <tr key={op.id} style={{ borderTop: '1px solid var(--glass-border)' }}>
                           <td className="px-3 py-2 text-xs" style={{ color: 'var(--text-primary)' }}>{formatDate(op.dataTransacao)}</td>
                           <td className="px-3 py-2 text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{getClienteNome(op.clienteId)}</td>
                           <td className="px-3 py-2 text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{formatCurrency(op.valorEnviado)}</td>
@@ -283,41 +279,41 @@ export default function Dinheiro() {
       {/* Edit Modal */}
       {showEditForm && selectedFundo && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowEditForm(false)}>
-          <div className="w-full max-w-lg rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="w-full max-w-lg overflow-hidden modal-shell" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Editar Fundo</h2>
-              <button onClick={() => setShowEditForm(false)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
+              <button onClick={() => setShowEditForm(false)} className="p-2 rounded-lg hover:bg-white/5">
                 <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div>
                 <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Nome do Fundo</label>
-                <input value={editForm.nome ?? ''} onChange={e => setEditForm(f => ({ ...f, nome: e.target.value }))} className={inputCls} style={inputStyle} />
+                <input value={editForm.nome ?? ''} onChange={e => setEditForm(f => ({ ...f, nome: e.target.value }))} className={inputCls} />
               </div>
               <div>
                 <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Taxa Padrão (%)</label>
-                <input type="number" value={editForm.taxaPadrao ?? ''} onChange={e => setEditForm(f => ({ ...f, taxaPadrao: Number(e.target.value) }))} className={inputCls} style={inputStyle} />
+                <input type="number" value={editForm.taxaPadrao ?? ''} onChange={e => setEditForm(f => ({ ...f, taxaPadrao: Number(e.target.value) }))} className={inputCls} />
               </div>
               <div>
                 <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Status</label>
-                <select value={editForm.status ?? 'ativo'} onChange={e => setEditForm(f => ({ ...f, status: e.target.value as FundoDinheiro['status'] }))} className={inputCls} style={inputStyle}>
+                <select value={editForm.status ?? 'ativo'} onChange={e => setEditForm(f => ({ ...f, status: e.target.value as FundoDinheiro['status'] }))} className={inputCls}>
                   <option value="ativo">Ativo</option>
                   <option value="bloqueado">Bloqueado</option>
                 </select>
               </div>
               <div>
                 <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Observações</label>
-                <textarea value={editForm.observacoes ?? ''} onChange={e => setEditForm(f => ({ ...f, observacoes: e.target.value }))} rows={2} className={`${inputCls} resize-none`} style={inputStyle} />
+                <textarea value={editForm.observacoes ?? ''} onChange={e => setEditForm(f => ({ ...f, observacoes: e.target.value }))} rows={2} className={`${inputCls} resize-none`} />
               </div>
               <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
                 Para adicionar capital ao fundo, use o botão "Aportar mais capital" nos detalhes.
               </p>
               {formError && <p className="text-sm text-danger-600">{formError}</p>}
-              <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <button onClick={() => setShowEditForm(false)} className="px-4 py-2 text-sm font-medium rounded-lg border hover:bg-[var(--bg-tertiary)] transition-colors" style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>Cancelar</button>
+              <div className="flex justify-end gap-3 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                <button onClick={() => setShowEditForm(false)} className="btn-secondary px-4 py-2 text-sm">Cancelar</button>
                 <button onClick={handleSaveEdit} disabled={saving || !editForm.nome}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-60">
+                  className="btn-primary px-4 py-2 text-sm">
                   {saving ? 'Salvando...' : 'Salvar Alterações'}
                 </button>
               </div>
@@ -329,26 +325,26 @@ export default function Dinheiro() {
       {/* New Fund Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowForm(false)}>
-          <div className="w-full max-w-lg rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="w-full max-w-lg overflow-hidden modal-shell" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Novo Fundo de Dinheiro</h2>
-              <button onClick={() => setShowForm(false)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
+              <button onClick={() => setShowForm(false)} className="p-2 rounded-lg hover:bg-white/5">
                 <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div>
                 <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Nome do Fundo</label>
-                <input value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} className={inputCls} style={inputStyle} placeholder="Ex: Caixa Principal, Reserva" />
+                <input value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} className={inputCls} placeholder="Ex: Caixa Principal, Reserva" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Valor Investido (R$)</label>
-                  <input type="number" value={form.valorInvestido} onChange={e => setForm(f => ({ ...f, valorInvestido: e.target.value }))} className={inputCls} style={inputStyle} placeholder="0,00" />
+                  <input type="number" value={form.valorInvestido} onChange={e => setForm(f => ({ ...f, valorInvestido: e.target.value }))} className={inputCls} placeholder="0,00" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Taxa Padrão (%)</label>
-                  <input type="number" value={form.taxaPadrao} onChange={e => setForm(f => ({ ...f, taxaPadrao: e.target.value }))} className={inputCls} style={inputStyle} placeholder="10" />
+                  <input type="number" value={form.taxaPadrao} onChange={e => setForm(f => ({ ...f, taxaPadrao: e.target.value }))} className={inputCls} placeholder="10" />
                 </div>
               </div>
               <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
@@ -356,13 +352,13 @@ export default function Dinheiro() {
               </p>
               <div>
                 <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Observações</label>
-                <textarea value={form.observacoes} onChange={e => setForm(f => ({ ...f, observacoes: e.target.value }))} rows={2} className={`${inputCls} resize-none`} style={inputStyle} />
+                <textarea value={form.observacoes} onChange={e => setForm(f => ({ ...f, observacoes: e.target.value }))} rows={2} className={`${inputCls} resize-none`} />
               </div>
               {formError && <p className="text-sm text-danger-600">{formError}</p>}
-              <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <button onClick={() => setShowForm(false)} className="px-4 py-2 text-sm font-medium rounded-lg border hover:bg-[var(--bg-tertiary)] transition-colors" style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>Cancelar</button>
+              <div className="flex justify-end gap-3 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                <button onClick={() => setShowForm(false)} className="btn-secondary px-4 py-2 text-sm">Cancelar</button>
                 <button onClick={handleSave} disabled={saving || !form.nome || !form.valorInvestido}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-60">
+                  className="btn-primary px-4 py-2 text-sm">
                   {saving ? 'Salvando...' : 'Salvar Fundo'}
                 </button>
               </div>

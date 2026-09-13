@@ -149,7 +149,7 @@ export default function Operacoes() {
           <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Operações</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Controle de empréstimos e negociações</p>
         </div>
-        <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2.5 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 transition-colors shadow-sm">
+        <button onClick={() => setShowForm(true)} className="btn-primary flex items-center gap-2 px-4 py-2.5 text-sm">
           <Plus className="w-4 h-4" /> Nova Operação
         </button>
       </div>
@@ -169,13 +169,11 @@ export default function Operacoes() {
           <input
             type="text" value={busca} onChange={e => setBusca(e.target.value)}
             placeholder="Buscar por cliente..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-sm"
-            style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+            className="w-full pl-10 pr-4 py-2.5 input-glass text-sm"
           />
         </div>
         <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
-          className="px-4 py-2.5 rounded-lg border text-sm"
-          style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+          className="px-4 py-2.5 input-glass text-sm">
           <option value="todos">Todos os Status</option>
           <option value="em_aberto">Em Aberto</option>
           <option value="pago_parcialmente">Parcialmente Pago</option>
@@ -186,7 +184,7 @@ export default function Operacoes() {
       </div>
 
       {/* Table */}
-      <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
+      <div className="gc-card overflow-hidden">
         {opsFiltradas.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <HandCoins className="w-12 h-12 mb-3 opacity-30" style={{ color: 'var(--text-tertiary)' }} />
@@ -201,7 +199,7 @@ export default function Operacoes() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <tr style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Cliente</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider hidden md:table-cell" style={{ color: 'var(--text-secondary)' }}>Fonte</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Enviado</th>
@@ -214,7 +212,7 @@ export default function Operacoes() {
               </thead>
               <tbody>
                 {opsFiltradas.map(op => (
-                  <tr key={op.id} className="border-t hover:bg-[var(--bg-tertiary)] transition-colors" style={{ borderColor: 'var(--border-color)' }}>
+                  <tr key={op.id} className="hover:bg-white/5 transition-colors" style={{ borderTop: '1px solid var(--glass-border)' }}>
                     <td className="px-4 py-3">
                       <div className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{getClienteNome(op.clienteId)}</div>
                       <div className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{formatDate(op.dataTransacao)}</div>
@@ -235,7 +233,7 @@ export default function Operacoes() {
                     </td>
                     <td className="px-4 py-3"><StatusBadge status={op.status} /></td>
                     <td className="px-4 py-3">
-                      <button onClick={() => setSelectedOp(op)} className="p-1.5 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors">
+                      <button onClick={() => setSelectedOp(op)} className="p-1.5 rounded-lg hover:bg-white/5 transition-colors">
                         <Eye className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
                       </button>
                     </td>
@@ -250,9 +248,8 @@ export default function Operacoes() {
       {/* Detail Modal */}
       {selectedOp && !showEditForm && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedOp(null)}>
-          <div className="w-full max-w-3xl max-h-[85vh] rounded-xl overflow-hidden flex flex-col"
-            style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="w-full max-w-3xl max-h-[85vh] overflow-hidden flex flex-col modal-shell" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <div>
                 <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
                   Operação #{selectedOp.id.slice(0, 8).toUpperCase()}
@@ -262,7 +259,7 @@ export default function Operacoes() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => handleOpenEdit(selectedOp)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors" title="Editar">
+                <button onClick={() => handleOpenEdit(selectedOp)} className="p-2 rounded-lg hover:bg-white/5 transition-colors" title="Editar">
                   <Pencil className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
                 </button>
                 {selectedOp.tipoCobranca === 'somente_juros' && !selectedOp.principalQuitado && (
@@ -275,40 +272,40 @@ export default function Operacoes() {
                 {!selectedOp.parcelas.some(p => p.status === 'paga') && !selectedOp.principalQuitado && (
                   <button
                     onClick={() => setConfirmDelete({ id: selectedOp.id, label: `Op. #${selectedOp.id.slice(0, 8).toUpperCase()}` })}
-                    className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors" title="Excluir">
+                    className="btn-danger-ghost p-2" title="Excluir">
                     <Trash2 className="w-4 h-4 text-danger-500" />
                   </button>
                 )}
-                <button onClick={() => setSelectedOp(null)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
+                <button onClick={() => setSelectedOp(null)} className="p-2 rounded-lg hover:bg-white/5">
                   <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
                 </button>
               </div>
             </div>
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Valor Enviado</p>
                   <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{formatCurrency(selectedOp.valorEnviado)}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Taxa</p>
                   <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{selectedOp.taxaAplicada}%</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Total a Receber</p>
                   <p className="text-sm font-bold text-primary-600">{formatCurrency(selectedOp.valorTotalReceber)}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Lucro</p>
                   <p className="text-sm font-bold text-success-600">{formatCurrency(selectedOp.valorTotalReceber - selectedOp.valorEnviado)}</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Fonte</p>
                   <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{getFonteNome(selectedOp)}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Forma Pgto</p>
                   <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
                     {selectedOp.tipoCobranca === 'somente_juros'
@@ -316,12 +313,12 @@ export default function Operacoes() {
                       : (selectedOp.formaPagamento === 'avista' ? 'À vista' : `${selectedOp.quantidadeParcelas}x`)}
                   </p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Status</p>
                   <div className="mt-0.5"><StatusBadge status={selectedOp.status} /></div>
                 </div>
                 {selectedOp.tipoCobranca === 'somente_juros' && (
-                  <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                  <div className="chip p-3">
                     <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Principal</p>
                     <p className="text-sm font-medium" style={{ color: selectedOp.principalQuitado ? '#34d399' : 'var(--text-primary)' }}>
                       {selectedOp.principalQuitado
@@ -332,7 +329,7 @@ export default function Operacoes() {
                 )}
               </div>
               {selectedOp.observacoes && (
-                <div className="p-3 rounded-lg border" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs font-medium mb-1" style={{ color: 'var(--text-tertiary)' }}>Observações</p>
                   <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{selectedOp.observacoes}</p>
                 </div>
@@ -340,10 +337,10 @@ export default function Operacoes() {
               {/* Parcelas table */}
               <div>
                 <h4 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Parcelas</h4>
-                <div className="overflow-x-auto rounded-lg border" style={{ borderColor: 'var(--border-color)' }}>
+                <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
                   <table className="w-full">
                     <thead>
-                      <tr style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                      <tr style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
                         <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>#</th>
                         <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Valor</th>
                         <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Vencimento</th>
@@ -354,7 +351,7 @@ export default function Operacoes() {
                     </thead>
                     <tbody>
                       {selectedOp.parcelas.map(p => (
-                        <tr key={p.id} className="border-t" style={{ borderColor: 'var(--border-color)' }}>
+                        <tr key={p.id} style={{ borderTop: '1px solid var(--glass-border)' }}>
                           <td className="px-3 py-2 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
                             {selectedOp.tipoCobranca === 'somente_juros' ? `Juros #${p.numero}` : `${p.numero}/${selectedOp.quantidadeParcelas}`}
                           </td>
@@ -395,10 +392,10 @@ export default function Operacoes() {
       {/* Edit Modal */}
       {selectedOp && showEditForm && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowEditForm(false)}>
-          <div className="w-full max-w-md rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="w-full max-w-md overflow-hidden modal-shell" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Editar Operação</h2>
-              <button onClick={() => setShowEditForm(false)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
+              <button onClick={() => setShowEditForm(false)} className="p-2 rounded-lg hover:bg-white/5">
                 <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
               </button>
             </div>
@@ -406,8 +403,7 @@ export default function Operacoes() {
               <div>
                 <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Status</label>
                 <select value={editForm.status} onChange={e => setEditForm(f => ({ ...f, status: e.target.value as Operacao['status'] }))}
-                  className="w-full px-3 py-2 rounded-lg border text-sm"
-                  style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+                  className="w-full px-3 py-2 input-glass text-sm">
                   <option value="em_aberto">Em Aberto</option>
                   <option value="pago_parcialmente">Parcialmente Pago</option>
                   <option value="pago">Pago</option>
@@ -418,13 +414,12 @@ export default function Operacoes() {
               <div>
                 <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Observações</label>
                 <textarea value={editForm.observacoes} onChange={e => setEditForm(f => ({ ...f, observacoes: e.target.value }))}
-                  rows={3} className="w-full px-3 py-2 rounded-lg border text-sm resize-none"
-                  style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} />
+                  rows={3} className="w-full px-3 py-2 input-glass text-sm resize-none" />
               </div>
               {formError && <p className="text-sm text-danger-600">{formError}</p>}
-              <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <button onClick={() => setShowEditForm(false)} className="px-4 py-2 text-sm font-medium rounded-lg border hover:bg-[var(--bg-tertiary)] transition-colors" style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>Cancelar</button>
-                <button onClick={handleSaveEdit} disabled={saving} className="px-4 py-2 text-sm font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-60">
+              <div className="flex justify-end gap-3 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                <button onClick={() => setShowEditForm(false)} className="btn-secondary px-4 py-2 text-sm">Cancelar</button>
+                <button onClick={handleSaveEdit} disabled={saving} className="btn-primary px-4 py-2 text-sm">
                   {saving ? 'Salvando...' : 'Salvar'}
                 </button>
               </div>
@@ -436,11 +431,10 @@ export default function Operacoes() {
       {/* New Operacao Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowForm(false)}>
-          <div className="w-full max-w-lg max-h-[85vh] rounded-xl overflow-hidden flex flex-col"
-            style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="w-full max-w-lg max-h-[85vh] overflow-hidden flex flex-col modal-shell" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Nova Operação</h2>
-              <button onClick={() => setShowForm(false)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
+              <button onClick={() => setShowForm(false)} className="p-2 rounded-lg hover:bg-white/5">
                 <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
               </button>
             </div>
@@ -449,8 +443,7 @@ export default function Operacoes() {
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Cliente</label>
                   <select value={form.clienteId} onChange={e => setForm(f => ({ ...f, clienteId: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+                    className="w-full px-3 py-2 input-glass text-sm">
                     <option value="">Selecione um cliente</option>
                     {clientes.filter(c => c.situacao !== 'bloqueado').map(c => (
                       <option key={c.id} value={c.id}>{c.nome}</option>
@@ -464,8 +457,7 @@ export default function Operacoes() {
                       const fonte = e.target.value as 'cartao' | 'dinheiro';
                       setForm(f => ({ ...f, fonte, cartaoId: '', fundoDinheiroId: '', taxaAplicada: '10', tipoCobranca: 'total' }));
                     }}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+                    className="w-full px-3 py-2 input-glass text-sm">
                     <option value="cartao">Cartão de Crédito</option>
                     <option value="dinheiro">Dinheiro (capital próprio)</option>
                   </select>
@@ -475,8 +467,7 @@ export default function Operacoes() {
                     <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Tipo de Cobrança</label>
                     <select value={form.tipoCobranca}
                       onChange={e => setForm(f => ({ ...f, tipoCobranca: e.target.value as 'total' | 'somente_juros' }))}
-                      className="w-full px-3 py-2 rounded-lg border text-sm"
-                      style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+                      className="w-full px-3 py-2 input-glass text-sm">
                       <option value="total">Valor Total (principal + juros)</option>
                       <option value="somente_juros">Somente Juros (principal fica em aberto)</option>
                     </select>
@@ -486,8 +477,7 @@ export default function Operacoes() {
                   <div className="sm:col-span-2">
                     <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Cartão</label>
                     <select value={form.cartaoId} onChange={e => setForm(f => ({ ...f, cartaoId: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-lg border text-sm"
-                      style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+                      className="w-full px-3 py-2 input-glass text-sm">
                       <option value="">Selecione um cartão</option>
                       {cartoes.filter(c => c.status === 'ativo').map(c => (
                         <option key={c.id} value={c.id}>{c.nome} (Disponível: {formatCurrency(c.limiteDisponivel)})</option>
@@ -502,8 +492,7 @@ export default function Operacoes() {
                         const fundo = fundosDinheiro.find(f => f.id === e.target.value);
                         setForm(f => ({ ...f, fundoDinheiroId: e.target.value, taxaAplicada: fundo ? String(fundo.taxaPadrao) : f.taxaAplicada }));
                       }}
-                      className="w-full px-3 py-2 rounded-lg border text-sm"
-                      style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+                      className="w-full px-3 py-2 input-glass text-sm">
                       <option value="">Selecione um fundo</option>
                       {fundosDinheiro.filter(f => f.status === 'ativo').map(f => (
                         <option key={f.id} value={f.id}>{f.nome} (Disponível: {formatCurrency(f.valorDisponivel)} | Taxa: {f.taxaPadrao}%)</option>
@@ -514,22 +503,19 @@ export default function Operacoes() {
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Valor Enviado (Pix)</label>
                   <input type="number" value={form.valorEnviado} onChange={e => setForm(f => ({ ...f, valorEnviado: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} placeholder="0,00" />
+                    className="w-full px-3 py-2 input-glass text-sm" placeholder="0,00" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Taxa (%)</label>
                   <input type="number" value={form.taxaAplicada} onChange={e => setForm(f => ({ ...f, taxaAplicada: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} placeholder="10" />
+                    className="w-full px-3 py-2 input-glass text-sm" placeholder="10" />
                 </div>
                 {!somenteJurosSelecionado && (
                   <>
                     <div>
                       <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Forma de Pagamento</label>
                       <select value={form.formaPagamento} onChange={e => setForm(f => ({ ...f, formaPagamento: e.target.value as 'avista' | 'parcelado' }))}
-                        className="w-full px-3 py-2 rounded-lg border text-sm"
-                        style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+                        className="w-full px-3 py-2 input-glass text-sm">
                         <option value="avista">À Vista</option>
                         <option value="parcelado">Parcelado</option>
                       </select>
@@ -538,8 +524,7 @@ export default function Operacoes() {
                       <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Parcelas</label>
                       <input type="number" value={form.quantidadeParcelas} onChange={e => setForm(f => ({ ...f, quantidadeParcelas: e.target.value }))}
                         disabled={form.formaPagamento === 'avista'}
-                        className="w-full px-3 py-2 rounded-lg border text-sm disabled:opacity-50"
-                        style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+                        className="w-full px-3 py-2 input-glass text-sm disabled:opacity-50"
                         placeholder="1" min={1} max={24} />
                     </div>
                   </>
@@ -547,11 +532,10 @@ export default function Operacoes() {
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Observações</label>
                   <textarea value={form.observacoes} onChange={e => setForm(f => ({ ...f, observacoes: e.target.value }))}
-                    rows={2} className="w-full px-3 py-2 rounded-lg border text-sm resize-none"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} />
+                    rows={2} className="w-full px-3 py-2 input-glass text-sm resize-none" />
                 </div>
               </div>
-              <div className="p-3 rounded-lg border" style={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-color)' }}>
+              <div className="chip p-3">
                 <p className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Resumo da Operação (prévia)</p>
                 {somenteJurosSelecionado ? (
                   <>
@@ -587,11 +571,11 @@ export default function Operacoes() {
                 )}
               </div>
               {formError && <p className="text-sm text-danger-600">{formError}</p>}
-              <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <button onClick={() => setShowForm(false)} className="px-4 py-2 text-sm font-medium rounded-lg border hover:bg-[var(--bg-tertiary)] transition-colors" style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>Cancelar</button>
+              <div className="flex justify-end gap-3 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                <button onClick={() => setShowForm(false)} className="btn-secondary px-4 py-2 text-sm">Cancelar</button>
                 <button onClick={handleSaveOperacao}
                   disabled={saving || !form.clienteId || (form.fonte === 'cartao' ? !form.cartaoId : !form.fundoDinheiroId) || valorEnviadoNum <= 0}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-60">
+                  className="btn-primary px-4 py-2 text-sm">
                   {saving ? 'Salvando...' : 'Registrar Operação'}
                 </button>
               </div>

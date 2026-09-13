@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Wallet, Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Wallet, Mail, Lock, Loader2, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { isSupabaseConfigured } from '../lib/supabase';
+import AuthLayout from '../components/AuthLayout';
+
+const INPUT_CLASS =
+  'w-full pl-10 pr-3 py-2.5 rounded-[10px] border text-sm outline-none transition-colors focus:border-[rgba(0,213,196,0.5)] focus:ring-2 focus:ring-[rgba(0,213,196,0.15)]';
 
 export default function Login() {
   const { user, loading: authLoading, signIn, signUp, resetPasswordForEmail } = useAuth();
@@ -17,8 +21,8 @@ export default function Login() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: 'var(--accent)' }} />
       </div>
     );
   }
@@ -67,152 +71,195 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: 'var(--bg-secondary)' }}>
-      <div className="w-full max-w-md rounded-2xl border p-8 shadow-xl" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center mb-4">
-            <Wallet className="w-7 h-7 text-white" />
+    <AuthLayout>
+      <div className="w-full max-w-[400px]">
+        {/* Mobile-only brand header */}
+        <div className="flex lg:hidden flex-col items-center mb-6">
+          <div
+            className="w-12 h-12 rounded-[12px] flex items-center justify-center mb-3"
+            style={{ background: 'linear-gradient(135deg, #00d5c4, #00876e)', boxShadow: '0 0 18px rgba(0,213,196,0.4)' }}
+          >
+            <Wallet className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>CreditFlow</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Gestão de empréstimos</p>
+          <span className="font-extrabold tracking-tight text-white text-[18px]">
+            Credit<span style={{ color: 'var(--accent)' }}>Flow</span>
+          </span>
+          <p className="text-[12px] mt-1" style={{ color: 'var(--text-tertiary)' }}>Gestão de empréstimos via cartão</p>
         </div>
 
-        {mode !== 'forgot' && (
-          <div className="flex rounded-lg p-1 mb-6" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
-            <button
-              type="button"
-              onClick={() => switchMode('login')}
-              className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${mode === 'login' ? 'bg-primary-600 text-white' : ''}`}
-              style={mode !== 'login' ? { color: 'var(--text-secondary)' } : undefined}
-            >
-              Entrar
-            </button>
-            <button
-              type="button"
-              onClick={() => switchMode('signup')}
-              className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${mode === 'signup' ? 'bg-primary-600 text-white' : ''}`}
-              style={mode !== 'signup' ? { color: 'var(--text-secondary)' } : undefined}
-            >
-              Criar conta
-            </button>
-          </div>
-        )}
-
-        {!isSupabaseConfigured && (
-          <p className="text-sm text-warning-600 bg-warning-50 dark:bg-warning-950/30 px-3 py-2 rounded-lg mb-4">
-            Supabase não configurado. Crie o arquivo <code>.env.local</code> com as chaves do projeto para usar o app.
-          </p>
-        )}
-
-        {mode === 'forgot' && (
-          <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
-            Informe seu e-mail e enviaremos um link para você redefinir a senha.
-          </p>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>E-mail</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="w-full pl-10 pr-3 py-2.5 rounded-lg border text-sm"
-                style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
-                placeholder="seu@email.com"
-              />
-            </div>
+        <div
+          className="auth-card w-full rounded-[20px] p-7 sm:p-8"
+          style={{
+            background: 'var(--glass-bg)',
+            backdropFilter: 'var(--glass-blur)',
+            WebkitBackdropFilter: 'var(--glass-blur)',
+            border: '1px solid var(--glass-border)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
+          }}
+        >
+          <div className="mb-6">
+            <h1 className="text-[20px] font-extrabold" style={{ color: 'var(--text-primary)' }}>
+              {mode === 'login' && 'Bem-vindo de volta'}
+              {mode === 'signup' && 'Criar sua conta'}
+              {mode === 'forgot' && 'Redefinir senha'}
+            </h1>
+            <p className="text-[13px] mt-1" style={{ color: 'var(--text-tertiary)' }}>
+              {mode === 'login' && 'Entre para acompanhar suas operações e limites.'}
+              {mode === 'signup' && 'Leva menos de um minuto para começar.'}
+              {mode === 'forgot' && 'Informe seu e-mail e enviaremos um link de redefinição.'}
+            </p>
           </div>
 
           {mode !== 'forgot' && (
-            <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Senha</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  minLength={6}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-10 py-2.5 rounded-lg border text-sm"
-                  style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(v => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2"
-                  style={{ color: 'var(--text-tertiary)' }}
-                  tabIndex={-1}
-                  aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {mode === 'login' && (
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 text-xs cursor-pointer select-none" style={{ color: 'var(--text-secondary)' }}>
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={e => setRemember(e.target.checked)}
-                  className="rounded"
-                />
-                Manter conectado
-              </label>
+            <div className="flex rounded-[12px] p-1 mb-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--glass-border)' }}>
               <button
                 type="button"
-                onClick={() => switchMode('forgot')}
-                className="text-xs font-medium text-primary-600 hover:underline"
+                onClick={() => switchMode('login')}
+                className="flex-1 py-2 text-sm font-medium rounded-[9px] transition-all duration-200"
+                style={mode === 'login'
+                  ? { background: 'rgba(0,213,196,0.12)', border: '1px solid rgba(0,213,196,0.28)', color: 'var(--accent)' }
+                  : { border: '1px solid transparent', color: 'var(--text-secondary)' }}
               >
-                Esqueci minha senha
+                Entrar
+              </button>
+              <button
+                type="button"
+                onClick={() => switchMode('signup')}
+                className="flex-1 py-2 text-sm font-medium rounded-[9px] transition-all duration-200"
+                style={mode === 'signup'
+                  ? { background: 'rgba(0,213,196,0.12)', border: '1px solid rgba(0,213,196,0.28)', color: 'var(--accent)' }
+                  : { border: '1px solid transparent', color: 'var(--text-secondary)' }}
+              >
+                Criar conta
               </button>
             </div>
           )}
 
-          {error && (
-            <p className="text-sm text-danger-600 bg-danger-50 dark:bg-danger-950/30 px-3 py-2 rounded-lg">{error}</p>
-          )}
-          {success && (
-            <p className="text-sm text-success-600 bg-success-50 dark:bg-success-950/30 px-3 py-2 rounded-lg">{success}</p>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-2 py-2.5 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 transition-colors disabled:opacity-60"
-          >
-            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-            {mode === 'login' && 'Entrar'}
-            {mode === 'signup' && 'Criar conta'}
-            {mode === 'forgot' && 'Enviar link de redefinição'}
-          </button>
-
-          {mode === 'forgot' && (
-            <button
-              type="button"
-              onClick={() => switchMode('login')}
-              className="w-full text-xs font-medium text-center"
-              style={{ color: 'var(--text-secondary)' }}
+          {!isSupabaseConfigured && (
+            <p
+              className="text-[12px] px-3 py-2 rounded-[10px] mb-4"
+              style={{ color: '#fbbf24', background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}
             >
-              Voltar para o login
-            </button>
+              Supabase não configurado. Crie o arquivo <code>.env.local</code> com as chaves do projeto para usar o app.
+            </p>
           )}
-        </form>
 
-        {mode !== 'forgot' && (
-          <p className="text-xs text-center mt-6" style={{ color: 'var(--text-tertiary)' }}>
-            Cada conta possui dados isolados. Seus clientes e operações são privados.
-          </p>
-        )}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>E-mail</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className={INPUT_CLASS}
+                  style={{ borderColor: 'var(--glass-border)', backgroundColor: 'rgba(255,255,255,0.03)', color: 'var(--text-primary)' }}
+                  placeholder="seu@email.com"
+                />
+              </div>
+            </div>
+
+            {mode !== 'forgot' && (
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>Senha</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    minLength={6}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    className={`${INPUT_CLASS} pr-10`}
+                    style={{ borderColor: 'var(--glass-border)', backgroundColor: 'rgba(255,255,255,0.03)', color: 'var(--text-primary)' }}
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(v => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                    style={{ color: 'var(--text-tertiary)' }}
+                    tabIndex={-1}
+                    aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {mode === 'login' && (
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 text-xs cursor-pointer select-none" style={{ color: 'var(--text-secondary)' }}>
+                  <input
+                    type="checkbox"
+                    checked={remember}
+                    onChange={e => setRemember(e.target.checked)}
+                    className="rounded accent-[var(--accent)]"
+                  />
+                  Manter conectado
+                </label>
+                <button
+                  type="button"
+                  onClick={() => switchMode('forgot')}
+                  className="text-xs font-medium hover:underline"
+                  style={{ color: 'var(--accent)' }}
+                >
+                  Esqueci minha senha
+                </button>
+              </div>
+            )}
+
+            {error && (
+              <p className="text-[13px] px-3 py-2 rounded-[10px]" style={{ color: '#f87171', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                {error}
+              </p>
+            )}
+            {success && (
+              <p className="text-[13px] px-3 py-2 rounded-[10px]" style={{ color: '#34d399', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                {success}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[10px] font-semibold text-sm text-white transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed group"
+              style={{
+                background: 'linear-gradient(135deg, #00d5c4, #00876e)',
+                boxShadow: '0 0 0 rgba(0,213,196,0)',
+              }}
+              onMouseEnter={e => { if (!loading) (e.currentTarget as HTMLElement).style.boxShadow = '0 0 22px rgba(0,213,196,0.35)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 0 0 rgba(0,213,196,0)'; }}
+            >
+              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+              {!loading && mode === 'login' && <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />}
+              {mode === 'login' && 'Entrar'}
+              {mode === 'signup' && 'Criar conta'}
+              {mode === 'forgot' && 'Enviar link de redefinição'}
+            </button>
+
+            {mode === 'forgot' && (
+              <button
+                type="button"
+                onClick={() => switchMode('login')}
+                className="w-full text-xs font-medium text-center hover:underline"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                Voltar para o login
+              </button>
+            )}
+          </form>
+
+          {mode !== 'forgot' && (
+            <p className="text-[11px] text-center mt-6" style={{ color: 'var(--text-muted)' }}>
+              Cada conta possui dados isolados. Seus clientes e operações são privados.
+            </p>
+          )}
+        </div>
       </div>
-    </div>
+    </AuthLayout>
   );
 }

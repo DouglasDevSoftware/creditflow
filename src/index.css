@@ -94,6 +94,106 @@
   50%       { opacity: 0.35; }
 }
 
+@keyframes authIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatBlob {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(0, -18px); }
+}
+
+.auth-card {
+  animation: authIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-blob {
+  animation: floatBlob 10s ease-in-out infinite;
+}
+
+/* ── Shared glass UI primitives (cards, buttons, modals) ─── */
+.gc-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.gc-card:hover {
+  border-color: rgba(0, 213, 196, 0.22);
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #00d5c4, #00876e);
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: box-shadow 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+  box-shadow: 0 0 0 rgba(0, 213, 196, 0);
+}
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 0 20px rgba(0, 213, 196, 0.35);
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  border-radius: 10px;
+  font-weight: 500;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: var(--text-primary);
+}
+
+.btn-danger-ghost {
+  color: #f87171;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+.btn-danger-ghost:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.modal-shell {
+  background: var(--modal-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+.input-glass {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  border-radius: 10px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+.input-glass:focus {
+  border-color: rgba(0, 213, 196, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 213, 196, 0.15);
+}
+
+.chip {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+}
+
 /* ── Base ────────────────────────────────────── */
 body {
   margin: 0;

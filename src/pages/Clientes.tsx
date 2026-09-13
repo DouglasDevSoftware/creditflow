@@ -104,7 +104,7 @@ export default function Clientes() {
           <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Clientes</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Gerencie sua carteira de clientes</p>
         </div>
-        <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2.5 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 transition-colors shadow-sm">
+        <button onClick={() => setShowForm(true)} className="btn-primary flex items-center gap-2 px-4 py-2.5 text-sm">
           <Plus className="w-4 h-4" /> Novo Cliente
         </button>
       </div>
@@ -121,12 +121,10 @@ export default function Clientes() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
           <input type="text" value={busca} onChange={e => setBusca(e.target.value)}
             placeholder="Buscar por nome, CPF ou telefone..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-sm"
-            style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} />
+            className="w-full pl-10 pr-4 py-2.5 input-glass text-sm" />
         </div>
         <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
-          className="px-4 py-2.5 rounded-lg border text-sm"
-          style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+          className="px-4 py-2.5 input-glass text-sm">
           <option value="todos">Todos os Status</option>
           <option value="adimplente">Adimplente</option>
           <option value="atrasado">Atrasado</option>
@@ -135,7 +133,7 @@ export default function Clientes() {
         </select>
       </div>
 
-      <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
+      <div className="gc-card overflow-hidden">
         {clientesFiltrados.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Users className="w-12 h-12 mb-3 opacity-30" style={{ color: 'var(--text-tertiary)' }} />
@@ -150,7 +148,7 @@ export default function Clientes() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <tr style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Cliente</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider hidden md:table-cell" style={{ color: 'var(--text-secondary)' }}>CPF</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider hidden lg:table-cell" style={{ color: 'var(--text-secondary)' }}>Cidade</th>
@@ -161,7 +159,7 @@ export default function Clientes() {
               </thead>
               <tbody>
                 {clientesFiltrados.map(cliente => (
-                  <tr key={cliente.id} className="border-t hover:bg-[var(--bg-tertiary)] transition-colors" style={{ borderColor: 'var(--border-color)' }}>
+                  <tr key={cliente.id} className="hover:bg-white/5 transition-colors" style={{ borderTop: '1px solid var(--glass-border)' }}>
                     <td className="px-4 py-3">
                       <div className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{cliente.nome}</div>
                       <div className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{cliente.telefone}</div>
@@ -173,7 +171,7 @@ export default function Clientes() {
                       {formatCurrency(getClienteTotalAberto(cliente.id))}
                     </td>
                     <td className="px-4 py-3">
-                      <button onClick={() => setSelectedCliente(cliente)} className="p-1.5 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors" title="Ver detalhes">
+                      <button onClick={() => setSelectedCliente(cliente)} className="p-1.5 rounded-lg hover:bg-white/5 transition-colors" title="Ver detalhes">
                         <Eye className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
                       </button>
                     </td>
@@ -188,9 +186,8 @@ export default function Clientes() {
       {/* Detail Modal */}
       {selectedCliente && !showEditForm && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedCliente(null)}>
-          <div className="w-full max-w-3xl max-h-[85vh] rounded-xl overflow-hidden flex flex-col"
-            style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="w-full max-w-3xl max-h-[85vh] overflow-hidden flex flex-col modal-shell" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <div>
                 <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{selectedCliente.nome}</h2>
                 <div className="flex items-center gap-3 mt-1">
@@ -199,15 +196,15 @@ export default function Clientes() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => handleOpenEdit(selectedCliente)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors" title="Editar">
+                <button onClick={() => handleOpenEdit(selectedCliente)} className="p-2 rounded-lg hover:bg-white/5 transition-colors" title="Editar">
                   <Pencil className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
                 </button>
                 <button
                   onClick={() => setConfirmDelete({ id: selectedCliente.id, nome: selectedCliente.nome })}
-                  className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors" title="Excluir">
+                  className="btn-danger-ghost p-2" title="Excluir">
                   <Trash2 className="w-4 h-4 text-danger-500" />
                 </button>
-                <button onClick={() => setSelectedCliente(null)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
+                <button onClick={() => setSelectedCliente(null)} className="p-2 rounded-lg hover:bg-white/5">
                   <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
                 </button>
               </div>
@@ -225,19 +222,19 @@ export default function Clientes() {
                 </div>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Total Recebido</p>
                   <p className="text-sm font-bold text-success-600">{formatCurrency(getClienteTotalRecebido(selectedCliente.id))}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Em Aberto</p>
                   <p className="text-sm font-bold text-warning-600">{formatCurrency(getClienteTotalAberto(selectedCliente.id))}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Operações</p>
                   <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{getClienteOperacoes(selectedCliente.id).length}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Dias Atraso</p>
                   <p className={`text-sm font-bold ${getClienteDiasAtraso(selectedCliente.id) > 0 ? 'text-danger-600' : 'text-success-600'}`}>
                     {getClienteDiasAtraso(selectedCliente.id)}
@@ -245,17 +242,17 @@ export default function Clientes() {
                 </div>
               </div>
               {selectedCliente.observacoes && (
-                <div className="p-3 rounded-lg border" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-tertiary)' }}>
+                <div className="chip p-3">
                   <p className="text-xs font-medium mb-1" style={{ color: 'var(--text-tertiary)' }}>Observações</p>
                   <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{selectedCliente.observacoes}</p>
                 </div>
               )}
               <div>
                 <h4 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Histórico de Operações</h4>
-                <div className="overflow-x-auto rounded-lg border" style={{ borderColor: 'var(--border-color)' }}>
+                <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
                   <table className="w-full">
                     <thead>
-                      <tr style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                      <tr style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
                         <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Data</th>
                         <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Fonte</th>
                         <th className="px-3 py-2 text-left text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Valor</th>
@@ -267,7 +264,7 @@ export default function Clientes() {
                       {getClienteOperacoes(selectedCliente.id).length === 0 ? (
                         <tr><td colSpan={5} className="px-3 py-6 text-center text-sm" style={{ color: 'var(--text-tertiary)' }}>Nenhuma operação.</td></tr>
                       ) : getClienteOperacoes(selectedCliente.id).map(op => (
-                        <tr key={op.id} className="border-t" style={{ borderColor: 'var(--border-color)' }}>
+                        <tr key={op.id} style={{ borderTop: '1px solid var(--glass-border)' }}>
                           <td className="px-3 py-2 text-xs" style={{ color: 'var(--text-primary)' }}>{formatDate(op.dataTransacao)}</td>
                           <td className="px-3 py-2 text-xs" style={{ color: 'var(--text-secondary)' }}>{getFonteNome(op)}</td>
                           <td className="px-3 py-2 text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{formatCurrency(op.valorEnviado)}</td>
@@ -287,10 +284,10 @@ export default function Clientes() {
       {/* Edit Modal */}
       {selectedCliente && showEditForm && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowEditForm(false)}>
-          <div className="w-full max-w-lg rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="w-full max-w-lg overflow-hidden modal-shell" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Editar Cliente</h2>
-              <button onClick={() => setShowEditForm(false)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
+              <button onClick={() => setShowEditForm(false)} className="p-2 rounded-lg hover:bg-white/5">
                 <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
               </button>
             </div>
@@ -299,38 +296,32 @@ export default function Clientes() {
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Nome Completo</label>
                   <input value={editForm.nome ?? ''} onChange={e => setEditForm(f => ({ ...f, nome: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} />
+                    className="w-full px-3 py-2 input-glass text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>CPF</label>
                   <input value={editForm.cpf ?? ''} onChange={e => setEditForm(f => ({ ...f, cpf: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} placeholder="000.000.000-00" />
+                    className="w-full px-3 py-2 input-glass text-sm" placeholder="000.000.000-00" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Telefone</label>
                   <input value={editForm.telefone ?? ''} onChange={e => setEditForm(f => ({ ...f, telefone: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} />
+                    className="w-full px-3 py-2 input-glass text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>E-mail</label>
                   <input type="email" value={editForm.email ?? ''} onChange={e => setEditForm(f => ({ ...f, email: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} />
+                    className="w-full px-3 py-2 input-glass text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Cidade</label>
                   <input value={editForm.cidade ?? ''} onChange={e => setEditForm(f => ({ ...f, cidade: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} />
+                    className="w-full px-3 py-2 input-glass text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Situação</label>
                   <select value={editForm.situacao ?? 'adimplente'} onChange={e => setEditForm(f => ({ ...f, situacao: e.target.value as Cliente['situacao'] }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+                    className="w-full px-3 py-2 input-glass text-sm">
                     <option value="adimplente">Adimplente</option>
                     <option value="atrasado">Atrasado</option>
                     <option value="inadimplente">Inadimplente</option>
@@ -340,15 +331,14 @@ export default function Clientes() {
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Observações</label>
                   <textarea value={editForm.observacoes ?? ''} onChange={e => setEditForm(f => ({ ...f, observacoes: e.target.value }))}
-                    rows={3} className="w-full px-3 py-2 rounded-lg border text-sm resize-none"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} />
+                    rows={3} className="w-full px-3 py-2 input-glass text-sm resize-none" />
                 </div>
               </div>
               {formError && <p className="text-sm text-danger-600">{formError}</p>}
-              <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <button onClick={() => setShowEditForm(false)} className="px-4 py-2 text-sm font-medium rounded-lg border hover:bg-[var(--bg-tertiary)] transition-colors" style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>Cancelar</button>
+              <div className="flex justify-end gap-3 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                <button onClick={() => setShowEditForm(false)} className="btn-secondary px-4 py-2 text-sm">Cancelar</button>
                 <button onClick={handleSaveEdit} disabled={saving || !editForm.nome || !editForm.cpf}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-60">
+                  className="btn-primary px-4 py-2 text-sm">
                   {saving ? 'Salvando...' : 'Salvar Alterações'}
                 </button>
               </div>
@@ -360,10 +350,10 @@ export default function Clientes() {
       {/* New Client Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowForm(false)}>
-          <div className="w-full max-w-lg rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--modal-bg)' }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="w-full max-w-lg overflow-hidden modal-shell" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--glass-border)' }}>
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Novo Cliente</h2>
-              <button onClick={() => setShowForm(false)} className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]">
+              <button onClick={() => setShowForm(false)} className="p-2 rounded-lg hover:bg-white/5">
                 <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
               </button>
             </div>
@@ -372,45 +362,39 @@ export default function Clientes() {
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Nome Completo</label>
                   <input value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} />
+                    className="w-full px-3 py-2 input-glass text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>CPF</label>
                   <input value={form.cpf} onChange={e => setForm(f => ({ ...f, cpf: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} placeholder="000.000.000-00" />
+                    className="w-full px-3 py-2 input-glass text-sm" placeholder="000.000.000-00" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Telefone</label>
                   <input value={form.telefone} onChange={e => setForm(f => ({ ...f, telefone: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} placeholder="(00) 00000-0000" />
+                    className="w-full px-3 py-2 input-glass text-sm" placeholder="(00) 00000-0000" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>E-mail</label>
                   <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} />
+                    className="w-full px-3 py-2 input-glass text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Cidade</label>
                   <input value={form.cidade} onChange={e => setForm(f => ({ ...f, cidade: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border text-sm"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} />
+                    className="w-full px-3 py-2 input-glass text-sm" />
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Observações</label>
                   <textarea value={form.observacoes} onChange={e => setForm(f => ({ ...f, observacoes: e.target.value }))}
-                    rows={3} className="w-full px-3 py-2 rounded-lg border text-sm resize-none"
-                    style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }} />
+                    rows={3} className="w-full px-3 py-2 input-glass text-sm resize-none" />
                 </div>
               </div>
               {formError && <p className="text-sm text-danger-600">{formError}</p>}
-              <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <button onClick={() => setShowForm(false)} className="px-4 py-2 text-sm font-medium rounded-lg border hover:bg-[var(--bg-tertiary)] transition-colors" style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>Cancelar</button>
+              <div className="flex justify-end gap-3 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                <button onClick={() => setShowForm(false)} className="btn-secondary px-4 py-2 text-sm">Cancelar</button>
                 <button onClick={handleSaveCliente} disabled={saving || !form.nome || !form.cpf}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-60">
+                  className="btn-primary px-4 py-2 text-sm">
                   {saving ? 'Salvando...' : 'Salvar Cliente'}
                 </button>
               </div>

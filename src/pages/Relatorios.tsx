@@ -152,13 +152,13 @@ export default function Relatorios() {
 
   const renderReport = () => {
     const thStyle = { color: 'var(--text-secondary)' };
-    const trStyle = { borderColor: 'var(--border-color)' };
-    const headerStyle = { backgroundColor: 'var(--bg-tertiary)' };
+    const trStyle = { borderTop: '1px solid var(--glass-border)' };
+    const headerStyle = { backgroundColor: 'rgba(255,255,255,0.03)' };
 
     switch (selectedReport) {
       case 'clientes':
         return (
-          <div className="overflow-x-auto rounded-lg border" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
             <table className="w-full">
               <thead>
                 <tr style={headerStyle}>
@@ -175,7 +175,7 @@ export default function Relatorios() {
                   const recebido = ops.reduce((s, o) => s + o.parcelas.filter(p => p.status === 'paga').reduce((sum, p) => sum + p.valor, 0), 0);
                   const aberto = ops.reduce((s, o) => s + o.parcelas.filter(p => p.status !== 'paga').reduce((sum, p) => sum + p.valor, 0), 0);
                   return (
-                    <tr key={c.id} className="border-t" style={trStyle}>
+                    <tr key={c.id} style={trStyle}>
                       <td className="px-4 py-3 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{c.nome}</td>
                       <td className="px-4 py-3 text-sm capitalize" style={{ color: 'var(--text-secondary)' }}>{c.situacao}</td>
                       <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-secondary)' }}>{ops.length}</td>
@@ -190,7 +190,7 @@ export default function Relatorios() {
         );
       case 'cartoes':
         return (
-          <div className="overflow-x-auto rounded-lg border" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
             <table className="w-full">
               <thead>
                 <tr style={headerStyle}>
@@ -203,7 +203,7 @@ export default function Relatorios() {
               </thead>
               <tbody>
                 {cartoes.map(c => (
-                  <tr key={c.id} className="border-t" style={trStyle}>
+                  <tr key={c.id} style={trStyle}>
                     <td className="px-4 py-3">
                       <div className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{c.nome}</div>
                       <div className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{c.banco} • {c.bandeira}</div>
@@ -222,7 +222,7 @@ export default function Relatorios() {
         );
       case 'operacoes':
         return (
-          <div className="overflow-x-auto rounded-lg border" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
             <table className="w-full">
               <thead>
                 <tr style={headerStyle}>
@@ -237,7 +237,7 @@ export default function Relatorios() {
               </thead>
               <tbody>
                 {operacoes.map(o => (
-                  <tr key={o.id} className="border-t" style={trStyle}>
+                  <tr key={o.id} style={trStyle}>
                     <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-secondary)' }}>{formatDate(o.dataTransacao)}</td>
                     <td className="px-4 py-3 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{getClienteNome(o.clienteId)}</td>
                     <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-secondary)' }}>{getFonteNome(o)}</td>
@@ -256,22 +256,22 @@ export default function Relatorios() {
         return (
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="p-4 rounded-lg border" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
+              <div className="chip p-4">
                 <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Operações Inadimplentes</p>
                 <p className="text-xl font-bold text-danger-600">{opsInadimplentes.length}</p>
               </div>
-              <div className="p-4 rounded-lg border" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
+              <div className="chip p-4">
                 <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Valor Total Vencido</p>
                 <p className="text-xl font-bold text-danger-600">
                   {formatCurrency(opsInadimplentes.reduce((s, o) => s + o.parcelas.filter(p => p.status === 'vencida').reduce((sum, p) => sum + p.valor, 0), 0))}
                 </p>
               </div>
-              <div className="p-4 rounded-lg border" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
+              <div className="chip p-4">
                 <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Clientes Afetados</p>
                 <p className="text-xl font-bold text-warning-600">{new Set(opsInadimplentes.map(o => o.clienteId)).size}</p>
               </div>
             </div>
-            <div className="overflow-x-auto rounded-lg border" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
               <table className="w-full">
                 <thead>
                   <tr style={headerStyle}>
@@ -283,7 +283,7 @@ export default function Relatorios() {
                 </thead>
                 <tbody>
                   {opsInadimplentes.map(o => (
-                    <tr key={o.id} className="border-t" style={trStyle}>
+                    <tr key={o.id} style={trStyle}>
                       <td className="px-4 py-3 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{getClienteNome(o.clienteId)}</td>
                       <td className="px-4 py-3 text-sm capitalize text-danger-600 font-medium">{o.status.replace(/_/g, ' ')}</td>
                       <td className="px-4 py-3 text-sm text-right font-medium text-danger-600">
@@ -302,7 +302,7 @@ export default function Relatorios() {
       }
       case 'fluxo':
         return (
-          <div className="overflow-x-auto rounded-lg border" style={{ borderColor: 'var(--border-color)' }}>
+          <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
             <table className="w-full">
               <thead>
                 <tr style={headerStyle}>
@@ -314,7 +314,7 @@ export default function Relatorios() {
               </thead>
               <tbody>
                 {[...movimentacoes].sort((a, b) => b.data.localeCompare(a.data)).map(m => (
-                  <tr key={m.id} className="border-t" style={trStyle}>
+                  <tr key={m.id} style={trStyle}>
                     <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-secondary)' }}>{formatDate(m.data)}</td>
                     <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-primary)' }}>{m.descricao}</td>
                     <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-secondary)' }}>{m.categoria}</td>
@@ -330,11 +330,11 @@ export default function Relatorios() {
       case 'lucro':
         return (
           <div className="space-y-4">
-            <div className="p-5 rounded-lg border" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
+            <div className="gc-card p-5">
               <h4 className="text-sm font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Resultado Mensal (Entradas - Saídas)</h4>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={lucroMensal}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
                   <XAxis dataKey="mes" tick={{ fontSize: 12, fill: 'var(--text-secondary)' }} />
                   <YAxis tick={{ fontSize: 12, fill: 'var(--text-secondary)' }} tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
                   <Tooltip formatter={(value) => formatCurrency(Number(value))} />
@@ -342,7 +342,7 @@ export default function Relatorios() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <div className="overflow-x-auto rounded-lg border" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
               <table className="w-full">
                 <thead>
                   <tr style={headerStyle}>
@@ -354,7 +354,7 @@ export default function Relatorios() {
                 </thead>
                 <tbody>
                   {lucroMensal.map(m => (
-                    <tr key={m.mes} className="border-t" style={trStyle}>
+                    <tr key={m.mes} style={trStyle}>
                       <td className="px-4 py-3 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{m.mes}</td>
                       <td className="px-4 py-3 text-sm text-right text-success-600">{formatCurrency(m.entradas)}</td>
                       <td className="px-4 py-3 text-sm text-right text-danger-600">{formatCurrency(m.saidas)}</td>
@@ -373,7 +373,7 @@ export default function Relatorios() {
         return (
           <div className="space-y-4">
             <h4 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Contas a Receber ({contasReceber.length})</h4>
-            <div className="overflow-x-auto rounded-lg border" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
               <table className="w-full">
                 <thead>
                   <tr style={headerStyle}>
@@ -385,7 +385,7 @@ export default function Relatorios() {
                 </thead>
                 <tbody>
                   {contasReceber.map((p, i) => (
-                    <tr key={i} className="border-t" style={trStyle}>
+                    <tr key={i} style={trStyle}>
                       <td className="px-4 py-3 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{getClienteNome(p.clienteId)}</td>
                       <td className="px-4 py-3 text-sm" style={{ color: 'var(--text-secondary)' }}>{formatDate(p.vencimento)}</td>
                       <td className="px-4 py-3 text-sm text-right font-medium" style={{ color: 'var(--text-primary)' }}>{formatCurrency(p.valor)}</td>
@@ -416,12 +416,9 @@ export default function Relatorios() {
             <button
               key={opt.value}
               onClick={() => setSelectedReport(opt.value)}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
-                selectedReport === opt.value
-                  ? 'bg-primary-600 text-white'
-                  : 'border hover:bg-[var(--bg-tertiary)]'
-              }`}
-              style={selectedReport !== opt.value ? { borderColor: 'var(--border-color)', color: 'var(--text-secondary)' } : {}}
+              className={selectedReport === opt.value
+                ? 'btn-primary px-3 py-2 text-xs'
+                : 'btn-secondary px-3 py-2 text-xs'}
             >
               {opt.label}
             </button>
@@ -430,22 +427,20 @@ export default function Relatorios() {
         <div className="flex gap-2">
           <button
             onClick={handlePrint}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-medium hover:bg-[var(--bg-tertiary)] transition-colors"
-            style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}
+            className="btn-secondary flex items-center gap-1.5 px-3 py-2 text-xs"
           >
             <Printer className="w-3.5 h-3.5" /> PDF
           </button>
           <button
             onClick={handleDownloadCsv}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-medium hover:bg-[var(--bg-tertiary)] transition-colors"
-            style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}
+            className="btn-secondary flex items-center gap-1.5 px-3 py-2 text-xs"
           >
             <Download className="w-3.5 h-3.5" /> CSV
           </button>
         </div>
       </div>
 
-      <div ref={printRef} className="rounded-xl border p-5" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
+      <div ref={printRef} className="gc-card p-5">
         <div className="flex items-center gap-2 mb-4">
           <FileBarChart className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
           <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{currentLabel}</h3>

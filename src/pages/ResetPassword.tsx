@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Wallet, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Wallet, Lock, Loader2, Eye, EyeOff, KeyRound } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
+import AuthLayout from '../components/AuthLayout';
+
+const INPUT_CLASS =
+  'w-full pl-10 pr-10 py-2.5 rounded-[10px] border text-sm outline-none transition-colors focus:border-[rgba(0,213,196,0.5)] focus:ring-2 focus:ring-[rgba(0,213,196,0.15)]';
 
 export default function ResetPassword() {
   const { updatePassword } = useAuth();
@@ -37,77 +41,109 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: 'var(--bg-secondary)' }}>
-      <div className="w-full max-w-md rounded-2xl border p-8 shadow-xl" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center mb-4">
-            <Wallet className="w-7 h-7 text-white" />
+    <AuthLayout>
+      <div className="w-full max-w-[400px]">
+        {/* Mobile-only brand header */}
+        <div className="flex lg:hidden flex-col items-center mb-6">
+          <div
+            className="w-12 h-12 rounded-[12px] flex items-center justify-center mb-3"
+            style={{ background: 'linear-gradient(135deg, #00d5c4, #00876e)', boxShadow: '0 0 18px rgba(0,213,196,0.4)' }}
+          >
+            <Wallet className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Redefinir senha</h1>
-          <p className="text-sm mt-1 text-center" style={{ color: 'var(--text-secondary)' }}>
-            Escolha uma nova senha para sua conta
-          </p>
+          <span className="font-extrabold tracking-tight text-white text-[18px]">
+            Credit<span style={{ color: 'var(--accent)' }}>Flow</span>
+          </span>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Nova senha</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-              <input
-                type={showPassword ? 'text' : 'password'}
-                required
-                minLength={6}
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 rounded-lg border text-sm"
-                style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(v => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2"
-                style={{ color: 'var(--text-tertiary)' }}
-                tabIndex={-1}
-                aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
+        <div
+          className="auth-card w-full rounded-[20px] p-7 sm:p-8"
+          style={{
+            background: 'var(--glass-bg)',
+            backdropFilter: 'var(--glass-blur)',
+            WebkitBackdropFilter: 'var(--glass-blur)',
+            border: '1px solid var(--glass-border)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
+          }}
+        >
+          <div className="flex flex-col items-center mb-7 text-center">
+            <div
+              className="w-12 h-12 rounded-[12px] flex items-center justify-center mb-3"
+              style={{ background: 'rgba(0,213,196,0.10)', border: '1px solid rgba(0,213,196,0.25)', color: 'var(--accent)' }}
+            >
+              <KeyRound className="w-5 h-5" />
             </div>
+            <h1 className="text-[20px] font-extrabold" style={{ color: 'var(--text-primary)' }}>Redefinir senha</h1>
+            <p className="text-[13px] mt-1" style={{ color: 'var(--text-tertiary)' }}>
+              Escolha uma nova senha para sua conta
+            </p>
           </div>
 
-          <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Confirmar nova senha</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-              <input
-                type={showPassword ? 'text' : 'password'}
-                required
-                minLength={6}
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 rounded-lg border text-sm"
-                style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
-                placeholder="••••••••"
-              />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>Nova senha</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  minLength={6}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  className={INPUT_CLASS}
+                  style={{ borderColor: 'var(--glass-border)', backgroundColor: 'rgba(255,255,255,0.03)', color: 'var(--text-primary)' }}
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(v => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  style={{ color: 'var(--text-tertiary)' }}
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
-          </div>
 
-          {error && (
-            <p className="text-sm text-danger-600 bg-danger-50 dark:bg-danger-950/30 px-3 py-2 rounded-lg">{error}</p>
-          )}
+            <div>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>Confirmar nova senha</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  minLength={6}
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  className={INPUT_CLASS}
+                  style={{ borderColor: 'var(--glass-border)', backgroundColor: 'rgba(255,255,255,0.03)', color: 'var(--text-primary)' }}
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-2 py-2.5 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 transition-colors disabled:opacity-60"
-          >
-            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-            Redefinir senha
-          </button>
-        </form>
+            {error && (
+              <p className="text-[13px] px-3 py-2 rounded-[10px]" style={{ color: '#f87171', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[10px] font-semibold text-sm text-white transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{ background: 'linear-gradient(135deg, #00d5c4, #00876e)' }}
+              onMouseEnter={e => { if (!loading) (e.currentTarget as HTMLElement).style.boxShadow = '0 0 22px rgba(0,213,196,0.35)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
+            >
+              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+              Redefinir senha
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </AuthLayout>
   );
 }

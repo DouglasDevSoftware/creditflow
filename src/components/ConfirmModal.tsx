@@ -21,8 +21,7 @@ export default function ConfirmModal({
       onClick={onCancel}
     >
       <div
-        className="w-full max-w-sm rounded-xl p-6 shadow-xl"
-        style={{ backgroundColor: 'var(--modal-bg)' }}
+        className="modal-shell w-full max-w-sm p-6"
         onClick={e => e.stopPropagation()}
       >
         <h3 className="text-base font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
@@ -34,16 +33,16 @@ export default function ConfirmModal({
         <div className="flex justify-end gap-3">
           <button
             onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium rounded-lg border hover:bg-[var(--bg-tertiary)] transition-colors"
-            style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}
+            className="btn-secondary px-4 py-2 text-sm"
           >
             Cancelar
           </button>
           <button
             onClick={onConfirm}
-            className={`px-4 py-2 text-sm font-medium rounded-lg text-white transition-colors ${
-              danger ? 'bg-red-600 hover:bg-red-700' : 'bg-primary-600 hover:bg-primary-700'
-            }`}
+            className={danger ? 'px-4 py-2 text-sm font-semibold rounded-[10px] text-white transition-all duration-200' : 'btn-primary px-4 py-2 text-sm'}
+            style={danger ? { background: 'linear-gradient(135deg, #ef4444, #b91c1c)' } : undefined}
+            onMouseEnter={e => { if (danger) (e.currentTarget as HTMLElement).style.boxShadow = '0 0 18px rgba(239,68,68,0.35)'; }}
+            onMouseLeave={e => { if (danger) (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
           >
             {confirmLabel}
           </button>
