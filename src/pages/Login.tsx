@@ -92,6 +92,14 @@ export default function Login() {
             boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
           }}
         >
+          {/* Desktop-only brand mark — the mobile header above already covers small screens */}
+          <div className="hidden lg:flex items-center gap-2 mb-5">
+            <img src="/creditflow-icon.png" alt="" width={30} height={30} className="logo-badge shrink-0" />
+            <span className="brand-wordmark text-white text-[14px]">
+              Credit<span className="brand-flow">Flow</span>
+            </span>
+          </div>
+
           <div className="mb-5">
             <h1 className="text-[18px] font-extrabold" style={{ color: 'var(--text-primary)' }}>
               {mode === 'login' && 'Bem-vindo de volta'}

@@ -61,6 +61,14 @@ export default function ResetPassword() {
             boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
           }}
         >
+          {/* Desktop-only brand mark — the mobile header above already covers small screens */}
+          <div className="hidden lg:flex items-center gap-2 mb-5">
+            <img src="/creditflow-icon.png" alt="" width={30} height={30} className="logo-badge shrink-0" />
+            <span className="brand-wordmark text-white text-[14px]">
+              Credit<span className="brand-flow">Flow</span>
+            </span>
+          </div>
+
           <div className="flex flex-col items-center mb-7 text-center">
             <div
               className="w-12 h-12 rounded-[12px] flex items-center justify-center mb-3"
