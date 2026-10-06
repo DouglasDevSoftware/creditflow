@@ -47,3 +47,17 @@ Cada usuário autenticado vê apenas seus dados. O isolamento é garantido por:
 
 - Coluna `user_id` em todas as tabelas
 - Row Level Security (RLS) com `auth.uid() = user_id`
+
+## Keep-alive (evitar pausa do projeto)
+
+O plano free do Supabase pausa o projeto após 7 dias sem atividade. O workflow
+`.github/workflows/supabase-keep-alive.yml` roda 2x por dia e grava um registro
+no banco via `keep_alive_ping()`.
+
+1. No **SQL Editor**, execute `supabase/migrations/008_keep_alive.sql`
+2. No GitHub: **Settings** → **Secrets and variables** → **Actions** → **New repository secret**:
+   - `SUPABASE_URL` = Project URL
+   - `SUPABASE_ANON_KEY` = anon public key
+3. Em **Actions** → **Supabase keep-alive** → **Run workflow** para testar
+
+Se o ping falhar, o GitHub envia e-mail de falha do workflow.

@@ -1,0 +1,84 @@
+name: Supabase keep-alive
+
+# Impede a pausa automática do projeto Supabase (plano free pausa após 7 dias
+# sem atividade). Roda 2x por dia para ter redundância: mesmo que uma execução
+# falhe ou atrase, a outra mantém o projeto ativo.
+on:
+  schedule:
+    - cron: '17 9 * * *'   # 06:17 (Brasília)
+    - cron: '17 21 * * *'  # 18:17 (Brasília)
+  workflow_dispatch:
+
+permissions:
+  actions: write   # necessário para o passo que mantém o agendamento habilitado
+  contents: read
+
+concurrency:
+  group: supabase-keep-alive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+    steps:
+      - name: Verificar secrets
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::Configure os secrets SUPABASE_URL e SUPABASE_ANON_KEY em Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+      - name: Ping no banco (escrita via RPC)
+        run: |
+          set -u
+          for attempt in 1 2 3 4 5; do
+            status=$(curl -sS -o response.txt -w '%{http_code}' --max-time 30 \
+              -X POST "$SUPABASE_URL/rest/v1/rpc/keep_alive_ping" \
+              -H "apikey: $SUPABASE_ANON_KEY" \
+              -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{"p_source":"github-actions"}') || status=000
+
+            if [ "$status" = "200" ]; then
+              echo "Ping OK em $(cat response.txt)"
+              exit 0
+            fi
+
+            # Função ainda não criada (migration 008 não aplicada): faz uma
+            # leitura simples para manter o projeto ativo mesmo assim.
+            if [ "$status" = "404" ]; then
+              echo "::warning::keep_alive_ping() não encontrada. Rode supabase/migrations/008_keep_alive.sql no SQL Editor."
+              fallback=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 \
+                "$SUPABASE_URL/rest/v1/profiles?select=id&limit=1" \
+                -H "apikey: $SUPABASE_ANON_KEY" \
+                -H "Authorization: Bearer $SUPABASE_ANON_KEY") || fallback=000
+              if [ "$fallback" = "200" ]; then
+                echo "Ping de leitura OK (fallback)."
+                exit 0
+              fi
+            fi
+
+            echo "Tentativa $attempt falhou (HTTP $status): $(cat response.txt 2>/dev/null)"
+            sleep $((attempt * 20))
+          done
+
+          echo "::error::Não foi possível acessar o Supabase após 5 tentativas. Verifique se o projeto foi pausado."
+          exit 1
+
+  # O GitHub desativa workflows agendados após 60 dias sem commits no repositório.
+  # Este passo reativa o workflow via API a cada execução, evitando isso.
+  keep-workflow-enabled:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Reativar agendamento
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api -X PUT \
+            "repos/${{ github.repository }}/actions/workflows/supabase-keep-alive.yml/enable" \
+            && echo "Workflow mantido habilitado."
